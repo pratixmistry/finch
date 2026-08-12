@@ -17,7 +17,13 @@ export async function getProfile(supabase: Client, userId: string) {
 export async function updateProfile(
   supabase: Client,
   userId: string,
-  input: Partial<{ fullName: string; currency: string; timezone: string }>
+  input: Partial<{
+    fullName: string;
+    currency: string;
+    timezone: string;
+    dateFormat: string;
+    weekStartDay: number;
+  }>
 ) {
   const { data, error } = await supabase
     .from("profiles")
@@ -25,6 +31,8 @@ export async function updateProfile(
       full_name: input.fullName,
       currency: input.currency,
       timezone: input.timezone,
+      date_format: input.dateFormat,
+      week_start_day: input.weekStartDay,
     })
     .eq("id", userId)
     .select("*")

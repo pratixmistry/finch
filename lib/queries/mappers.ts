@@ -1,9 +1,15 @@
 import type { Database } from "@/types/database";
-import type { Account, Category, Profile, Transaction } from "@/types";
+import type { Account, Budget, Category, Investment, Profile, Transaction } from "@/types";
 
 type AccountRow = Database["public"]["Tables"]["accounts"]["Row"];
 type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type BudgetRow = Database["public"]["Tables"]["budgets"]["Row"] & {
+  category?: Pick<CategoryRow, "id" | "name" | "icon" | "color"> | null;
+};
+type InvestmentRow = Database["public"]["Tables"]["investments"]["Row"] & {
+  account?: Pick<AccountRow, "id" | "name"> | null;
+};
 type TransactionRow = Database["public"]["Tables"]["transactions"]["Row"] & {
   account?: Pick<AccountRow, "id" | "name" | "type"> | null;
   category?: Pick<CategoryRow, "id" | "name" | "icon" | "color"> | null;
@@ -45,6 +51,35 @@ export function mapProfile(row: ProfileRow): Profile {
     timezone: row.timezone,
     dateFormat: row.date_format,
     weekStartDay: row.week_start_day,
+  };
+}
+
+export function mapBudget(row: BudgetRow): Budget {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    categoryId: row.category_id,
+    amount: Number(row.amount),
+    period: row.period,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    category: row.category ?? undefined,
+  };
+}
+
+export function mapInvestment(row: InvestmentRow): Investment {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    accountId: row.account_id,
+    name: row.name,
+    assetType: row.asset_type,
+    symbol: row.symbol,
+    quantity: Number(row.quantity),
+    averageBuyPrice: Number(row.average_buy_price),
+    currentPrice: Number(row.current_price),
+    isActive: row.is_active,
+    account: row.account ?? undefined,
   };
 }
 

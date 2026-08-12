@@ -69,7 +69,11 @@ const TYPE_CONFIG: Record<
   },
 };
 
-function toFormValues(transaction: Transaction | null, defaultType: TransactionType): TransactionFormValues {
+function toFormValues(
+  transaction: Transaction | null,
+  defaultType: TransactionType,
+  defaultDate?: string
+): TransactionFormValues {
   if (!transaction) {
     return {
       type: defaultType,
@@ -77,7 +81,7 @@ function toFormValues(transaction: Transaction | null, defaultType: TransactionT
       categoryId: null,
       transferAccountId: null,
       amount: 0,
-      transactionDate: toInputDate(new Date()),
+      transactionDate: defaultDate ?? toInputDate(new Date()),
       description: "",
       notes: "",
     };
@@ -98,11 +102,13 @@ export function TransactionForm({
   mode,
   transaction,
   defaultType,
+  defaultDate,
   onSuccess,
 }: {
   mode: "create" | "edit";
   transaction: Transaction | null;
   defaultType: TransactionType;
+  defaultDate?: string;
   onSuccess: () => void;
 }) {
   const { data: accounts = [] } = useAccounts();
@@ -112,13 +118,13 @@ export function TransactionForm({
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
-    defaultValues: toFormValues(transaction, defaultType),
+    defaultValues: toFormValues(transaction, defaultType, defaultDate),
   });
 
   React.useEffect(() => {
-    form.reset(toFormValues(transaction, defaultType));
+    form.reset(toFormValues(transaction, defaultType, defaultDate));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transaction?.id, defaultType]);
+  }, [transaction?.id, defaultType, defaultDate]);
 
   const type = form.watch("type");
   const accountId = form.watch("accountId");

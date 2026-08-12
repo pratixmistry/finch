@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
-import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -47,13 +47,11 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
       <DropdownMenuContent align="start" side="top" className="w-56">
         <DropdownMenuLabel className="truncate">{email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() =>
-            toast("Coming soon", { description: "Settings arrives in a future update." })
-          }
-        >
-          <Settings className="size-4" />
-          Settings
+        <DropdownMenuItem asChild>
+          <Link href="/settings">
+            <Settings className="size-4" />
+            Settings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => logout()}>

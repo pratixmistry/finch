@@ -20,7 +20,7 @@ import {
   type UpdatePasswordFormValues,
 } from "@/lib/validations/auth";
 
-export function UpdatePasswordForm() {
+export function UpdatePasswordForm({ variant = "page" }: { variant?: "page" | "section" }) {
   const [isPending, startTransition] = React.useTransition();
   const [formError, setFormError] = React.useState<string | null>(null);
 
@@ -42,8 +42,12 @@ export function UpdatePasswordForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="space-y-1.5">
-        <h2 className="text-2xl font-semibold tracking-tight">Set a new password</h2>
-        <p className="text-muted-foreground text-sm">
+        {variant === "page" ? (
+          <h2 className="text-2xl font-semibold tracking-tight">Set a new password</h2>
+        ) : (
+          <h2 className="text-sm font-semibold">Password</h2>
+        )}
+        <p className={variant === "page" ? "text-muted-foreground text-sm" : "text-muted-foreground text-xs"}>
           Choose a new password for your account.
         </p>
       </div>

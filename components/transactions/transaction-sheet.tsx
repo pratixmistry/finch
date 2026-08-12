@@ -30,6 +30,7 @@ export function TransactionSheet() {
               mode={state.mode}
               transaction={state.transaction}
               defaultType={state.defaultType}
+              defaultDate={state.defaultDate}
               onSuccess={close}
             />
           )}

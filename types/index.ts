@@ -82,6 +82,7 @@ export interface Investment {
   averageBuyPrice: number;
   currentPrice: number;
   isActive: boolean;
+  account?: Pick<Account, "id" | "name">;
 }
 
 export interface InvestmentTransaction {

@@ -8,11 +8,12 @@ interface TransactionSheetState {
   mode: "create" | "edit";
   transaction: Transaction | null;
   defaultType: TransactionType;
+  defaultDate?: string;
 }
 
 interface TransactionSheetContextValue {
   state: TransactionSheetState;
-  openCreate: (defaultType?: TransactionType) => void;
+  openCreate: (defaultType?: TransactionType, defaultDate?: string) => void;
   openEdit: (transaction: Transaction) => void;
   close: () => void;
   setOpen: (open: boolean) => void;
@@ -25,13 +26,14 @@ const INITIAL_STATE: TransactionSheetState = {
   mode: "create",
   transaction: null,
   defaultType: "expense",
+  defaultDate: undefined,
 };
 
 export function TransactionSheetProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = React.useState<TransactionSheetState>(INITIAL_STATE);
 
-  const openCreate = React.useCallback((defaultType: TransactionType = "expense") => {
-    setState({ open: true, mode: "create", transaction: null, defaultType });
+  const openCreate = React.useCallback((defaultType: TransactionType = "expense", defaultDate?: string) => {
+    setState({ open: true, mode: "create", transaction: null, defaultType, defaultDate });
   }, []);
 
   const openEdit = React.useCallback((transaction: Transaction) => {
