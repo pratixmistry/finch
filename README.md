@@ -4,8 +4,9 @@ A personal finance / money manager web app: track income, expenses, accounts, an
 categories, with a dashboard of KPIs and charts. Built with Next.js (App Router) and
 Supabase (Postgres + Auth + Row Level Security).
 
-This is **Phase 1** of a two-phase build. See [Scope & limitations](#scope--limitations)
-for what's included now vs. planned for Phase 2.
+Phase 1 (accounts, transactions, categories, dashboard) and Phase 2 (calendar,
+budgets, investments, reports/CSV export, settings) are both built. See
+[Scope & limitations](#scope--limitations) for what's covered and what's still open.
 
 ## Tech stack
 
@@ -144,27 +145,31 @@ cases.
 - **URL-synced filters/date-range**, not component state, for the dashboard date range
   and the transactions table filters — shareable/bookmarkable, and survives a refresh.
 
-## Scope & limitations (Phase 1)
+## Scope & limitations
 
-**Built:** auth (signup/login/logout/password reset), full database schema + RLS,
-navigation shell with dark mode, Dashboard (KPIs with period-over-period comparison,
-income vs. expenses, expense breakdown, spending trend, top categories), Transactions
-(filterable/searchable/paginated table + mobile cards, Add/Edit sheet with a quick-add
-button), Accounts (cards, add/edit/archive, opening balance, per-account detail +
-history), Categories (income/expense management with icon/color, archive-on-history).
+**Built (Phase 1):** auth (signup/login/logout/password reset), full database schema +
+RLS, navigation shell with dark mode, Dashboard (KPIs with period-over-period
+comparison, income vs. expenses, expense breakdown, spending trend, top categories),
+Transactions (filterable/searchable/paginated table + mobile cards, Add/Edit sheet with
+a quick-add button), Accounts (cards, add/edit/archive, opening balance, per-account
+detail + history), Categories (income/expense management with icon/color,
+archive-on-history).
 
-**Deferred to Phase 2:** Calendar view, Budgets UI, Investments dashboard (the
-`investments`/`investment_transactions` tables and the ledger's `investment` transaction
-type already exist — only the dedicated UI is missing), Reports/CSV export, Settings
-page, CSV import, and a broader RLS/security-focused test suite. The dashboard's Net
-Worth figure currently reflects account balances only (assets minus credit
-card/loan debt); it will include investment holdings once that module ships.
+**Built (Phase 2):** Calendar (month grid with per-day income/expense indicators,
+click a day to view/add transactions), Budgets (category spending limits — monthly,
+quarterly, or yearly — with live progress against actual spend), Investments (holdings
+portfolio, buy/sell logging that recomputes weighted-average cost, allocation chart,
+gain/loss), Reports (cash-flow and category-breakdown tables for a selected date range
+plus client-side CSV export), Settings (profile/locale preferences, password change).
 
-**Not verified in this environment:** there was no live Supabase project available
-while building this, and Docker wasn't available to run the Supabase CLI locally
-either — so the auth flow, RLS policies, and live dashboard data have been verified by
-type-checking, linting, a production build, and the calculation unit tests, but not by
-clicking through the app against a real database. After you wire up your Supabase
-project per [Local setup](#local-setup), walk through: sign up → add an account → add
-a transaction → confirm the dashboard/balances update → try logging in as a second
-account and confirm you can't see the first account's data.
+**Still open:** CSV import, and a broader RLS/security-focused test suite. The
+dashboard's Net Worth figure currently reflects account balances only (assets minus
+credit card/loan debt) — it does not yet fold in investment holdings' market value.
+
+**Verified against a live Supabase project:** auth (signup, login, password reset
+link), RLS-isolated data per user, and every Phase 1 + Phase 2 page have been clicked
+through end-to-end in a real browser against a real database, not just type-checked.
+Two real bugs were caught and fixed this way: the email-confirmation route only handled
+the token_hash OTP flow (Supabase's actual links use PKCE's `?code=`), and the desktop
+sidebar was a Server Component passing icon components as props into a Client
+Component, which React Server Components can't serialize.
