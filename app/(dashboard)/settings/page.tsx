@@ -14,7 +14,7 @@ export default function SettingsPage() {
         <p className="text-muted-foreground text-sm">Your profile, preferences, and account.</p>
       </div>
 
-      <div className="bg-card rounded-xl border p-4 sm:p-5">
+      <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
         <h2 className="text-sm font-semibold">Profile</h2>
         <p className="text-muted-foreground mb-4 text-xs">
           How your name and locale preferences appear across Finch.
@@ -22,11 +22,11 @@ export default function SettingsPage() {
         <ProfileForm />
       </div>
 
-      <div className="bg-card rounded-xl border p-4 sm:p-5">
+      <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
         <UpdatePasswordForm variant="section" />
       </div>
 
-      <div className="bg-card flex items-center justify-between rounded-xl border p-4 sm:p-5">
+      <div className="bg-card flex items-center justify-between rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
         <div>
           <h2 className="text-sm font-semibold">Sign out</h2>
           <p className="text-muted-foreground text-xs">End your session on this device.</p>

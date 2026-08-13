@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useTheme } from "next-themes";
 import { Monitor, Moon, Sun } from "lucide-react";
 import {
@@ -16,13 +17,24 @@ const OPTIONS = [
   { value: "system", label: "System", icon: Monitor },
 ] as const;
 
+// The server always renders the "system" fallback (no access to
+// localStorage), but next-themes resolves the real theme synchronously on
+// the client — rendering it immediately would mismatch whatever the server
+// sent. useSyncExternalStore's getServerSnapshot/getSnapshot split gives a
+// hydration-safe "has the client mounted yet" flag without an extra effect.
+function useMounted() {
+  return React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
+
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const mounted = useMounted();
 
-  // next-themes reports `theme` as undefined until after the hydration
-  // effect it runs internally, which naturally avoids a server/client
-  // mismatch here without needing a local mounted flag.
-  const ActiveIcon = OPTIONS.find((o) => o.value === theme)?.icon ?? Monitor;
+  const ActiveIcon = mounted ? (OPTIONS.find((o) => o.value === theme)?.icon ?? Monitor) : Monitor;
 
   return (
     <DropdownMenu>

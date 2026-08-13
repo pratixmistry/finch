@@ -41,7 +41,7 @@ export function InvestmentCard({
   const isGain = gainLoss >= 0;
 
   return (
-    <div className="bg-card rounded-xl border p-4 transition-shadow hover:shadow-sm sm:p-5">
+    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
       <div className="flex items-start justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <div className="bg-investment/10 text-investment flex size-9 shrink-0 items-center justify-center rounded-lg">
@@ -65,7 +65,7 @@ export function InvestmentCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="shrink-0">
+            <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>

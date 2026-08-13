@@ -101,7 +101,7 @@ export function TransactionsList() {
   return (
     <div className={isPlaceholderData ? "opacity-60 transition-opacity" : undefined}>
       {/* Desktop table */}
-      <div className="hidden overflow-x-auto rounded-xl border md:block">
+      <div className="bg-card hidden overflow-x-auto rounded-xl shadow-xs ring-1 ring-foreground/10 md:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -155,7 +155,7 @@ export function TransactionsList() {
       {/* Mobile cards */}
       <ul className="space-y-2 md:hidden">
         {transactions.map((txn) => (
-          <li key={txn.id} className="bg-card flex items-center gap-3 rounded-xl border p-3">
+          <li key={txn.id} className="bg-card flex items-center gap-3 rounded-xl p-3 shadow-xs ring-1 ring-foreground/10">
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{txn.description || "—"}</p>
               <p className="text-muted-foreground truncate text-xs">
@@ -228,7 +228,7 @@ function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" className="shrink-0">
+        <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>

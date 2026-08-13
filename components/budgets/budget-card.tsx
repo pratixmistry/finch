@@ -36,7 +36,7 @@ export function BudgetCard({
   const barWidth = Math.min(100, Math.max(0, percentage));
 
   return (
-    <div className="bg-card flex flex-col gap-4 rounded-xl border p-4 sm:p-5">
+    <div className="bg-card flex flex-col gap-4 rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div
@@ -52,7 +52,7 @@ export function BudgetCard({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="shrink-0">
+            <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>

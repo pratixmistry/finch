@@ -34,7 +34,7 @@ export function AccountCard({
   const isLiability = account.type === "credit_card" || account.type === "loan";
 
   return (
-    <div className="bg-card group relative rounded-xl border p-4 transition-shadow hover:shadow-sm sm:p-5">
+    <div className="bg-card group relative rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 transition-shadow hover:shadow-md sm:p-5">
       <div className="flex items-start justify-between">
         <Link href={`/accounts/${account.id}`} className="flex min-w-0 items-center gap-3">
           <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
@@ -55,7 +55,7 @@ export function AccountCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="shrink-0">
+            <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>

@@ -54,7 +54,7 @@ export function CashFlowTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border">
+    <div className="bg-card overflow-x-auto rounded-xl shadow-xs ring-1 ring-foreground/10">
       <Table>
         <TableHeader>
           <TableRow>

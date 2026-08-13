@@ -83,7 +83,7 @@ export default function AccountDetailPage() {
         Accounts
       </Button>
 
-      <div className="bg-card rounded-xl border p-5 sm:p-6">
+      <div className="bg-card rounded-xl p-5 shadow-xs ring-1 ring-foreground/10 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
@@ -128,7 +128,7 @@ export default function AccountDetailPage() {
         {accountTxns.length === 0 ? (
           <EmptyState icon={Receipt} title="No transactions for this account yet" />
         ) : (
-          <ul className="divide-y rounded-xl border">
+          <ul className="bg-card divide-y rounded-xl shadow-xs ring-1 ring-foreground/10">
             {accountTxns
               .slice()
               .sort((a, b) => (a.transactionDate < b.transactionDate ? 1 : -1))

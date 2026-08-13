@@ -14,7 +14,7 @@ export function ChartCard({
   className?: string;
 }) {
   return (
-    <div className={cn("bg-card rounded-xl border p-4 sm:p-5", className)}>
+    <div className={cn("bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5", className)}>
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold">{title}</h3>

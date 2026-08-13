@@ -73,7 +73,7 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
   }
 
   return (
-    <div className="bg-card rounded-xl border p-4 sm:p-5">
+    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold">{title}</h2>
         <Button variant="outline" size="sm" onClick={openAdd}>
@@ -108,7 +108,7 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" className="shrink-0">
+                  <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
                     <MoreHorizontal className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>

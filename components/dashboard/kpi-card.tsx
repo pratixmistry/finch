@@ -27,7 +27,7 @@ export function KpiCard({
     trend && trend.direction !== "flat" ? (trend.direction === "up") === isGoodWhenUp : null;
 
   return (
-    <div className="bg-card rounded-xl border p-4 sm:p-5">
+    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-sm font-medium">{label}</p>
         <div className={cn("flex size-8 items-center justify-center rounded-lg", iconClassName)}>

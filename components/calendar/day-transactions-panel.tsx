@@ -29,7 +29,7 @@ export function DayTransactionsPanel({
   const expenses = totalExpenses(transactions);
 
   return (
-    <div className="bg-card flex flex-col gap-4 rounded-xl border p-4 sm:p-5">
+    <div className="bg-card flex flex-col gap-4 rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold">{formatDate(date, "EEEE, d MMM yyyy")}</h3>

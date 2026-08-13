@@ -53,7 +53,7 @@ export default function CalendarPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[auto_1fr] lg:items-start">
-        <div className="bg-card w-fit rounded-xl border p-2">
+        <div className="bg-card w-fit rounded-xl p-2 shadow-xs ring-1 ring-foreground/10">
           {isLoading ? (
             <Skeleton className="h-80 w-80" />
           ) : (
