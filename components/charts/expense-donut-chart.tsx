@@ -2,9 +2,15 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Cell, Pie, PieChart } from "recharts";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { useTransactionsForRange } from "@/hooks/use-transactions";
@@ -42,6 +48,14 @@ export function ExpenseDonutChart() {
     ];
   }, [transactions]);
 
+  const chartConfig = React.useMemo<ChartConfig>(() => {
+    const config: ChartConfig = {};
+    for (const entry of breakdown) {
+      config[entry.categoryId] = { label: entry.name, color: entry.color };
+    }
+    return config;
+  }, [breakdown]);
+
   const total = breakdown.reduce((sum, e) => sum + e.total, 0);
 
   return (
@@ -57,7 +71,7 @@ export function ExpenseDonutChart() {
       ) : (
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
           <div className="relative h-52 w-52 shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
                 <Pie
                   data={breakdown}
@@ -80,22 +94,30 @@ export function ExpenseDonutChart() {
                     <Cell key={entry.categoryId} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const entry = payload[0].payload as (typeof breakdown)[number];
-                    return (
-                      <div className="bg-popover text-popover-foreground rounded-lg border px-3 py-2 text-xs shadow-md">
-                        <p className="font-medium">{entry.name}</p>
-                        <p className="text-muted-foreground tabular-nums">
-                          {formatCurrency(entry.total)} · {entry.percentage.toFixed(1)}%
-                        </p>
-                      </div>
-                    );
-                  }}
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(_value, _name, item) => {
+                        const entry = item.payload as (typeof breakdown)[number];
+                        return (
+                          <div className="flex w-full items-center gap-2">
+                            <span
+                              className="size-2.5 shrink-0 rounded-full"
+                              style={{ backgroundColor: entry.color }}
+                            />
+                            <span className="text-muted-foreground flex-1">{entry.name}</span>
+                            <span className="font-medium tabular-nums">
+                              {formatCurrency(entry.total)} · {entry.percentage.toFixed(1)}%
+                            </span>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
                 />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <p className="text-muted-foreground text-[11px]">Total</p>
               <p className="text-sm font-semibold tabular-nums">{formatCurrency(total)}</p>

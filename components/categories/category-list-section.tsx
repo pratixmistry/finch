@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ArchiveRestore, MoreHorizontal, Pencil, Plus, Tags, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -101,9 +102,9 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
               </div>
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{category.name}</span>
               {!category.isActive && (
-                <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium">
+                <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">
                   Archived
-                </span>
+                </Badge>
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CategoryIcon } from "@/components/categories/category-icon";
+import { Progress } from "@/components/ui/progress";
 import { budgetProgress } from "@/lib/calculations";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { cn } from "@/lib/utils";
@@ -75,12 +76,11 @@ export function BudgetCard({
           </span>
           <span className="text-muted-foreground">of {formatCurrency(budget.amount)}</span>
         </div>
-        <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
-          <div
-            className={cn("h-full rounded-full transition-all", isOverBudget ? "bg-expense" : "bg-primary")}
-            style={{ width: `${barWidth}%` }}
-          />
-        </div>
+        <Progress
+          value={barWidth}
+          className="h-2"
+          indicatorClassName={isOverBudget ? "bg-expense" : "bg-primary"}
+        />
         <p className={cn("text-xs", isOverBudget ? "text-expense" : "text-muted-foreground")}>
           {isOverBudget
             ? `${formatCurrency(Math.abs(remaining))} over budget`

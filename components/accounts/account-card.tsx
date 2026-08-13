@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArchiveRestore, Archive as ArchiveIcon, MoreHorizontal, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -43,9 +44,9 @@ export function AccountCard({
             <div className="flex items-center gap-1.5">
               <p className="truncate text-sm font-semibold">{account.name}</p>
               {!account.isActive && (
-                <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium">
+                <Badge variant="secondary" className="h-4 shrink-0 px-1.5 text-[10px]">
                   Archived
-                </span>
+                </Badge>
               )}
             </div>
             <p className="text-muted-foreground text-xs">{ACCOUNT_TYPE_LABEL[account.type]}</p>

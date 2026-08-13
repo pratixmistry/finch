@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { NavItem } from "./nav-config";
 
@@ -20,9 +21,12 @@ export function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () =
       >
         <Icon className="size-4 shrink-0" strokeWidth={2} />
         <span className="flex-1 text-left">{item.label}</span>
-        <span className="rounded-full border border-sidebar-border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+        <Badge
+          variant="outline"
+          className="h-4 border-sidebar-border px-1.5 text-[10px] tracking-wide text-sidebar-foreground/70 uppercase"
+        >
           Soon
-        </span>
+        </Badge>
       </button>
     );
   }

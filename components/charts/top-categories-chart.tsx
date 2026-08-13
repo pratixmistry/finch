@@ -2,9 +2,15 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { useTransactionsForRange } from "@/hooks/use-transactions";
@@ -12,9 +18,12 @@ import { useDateRange } from "@/hooks/use-date-range";
 import { expenseBreakdownByCategory } from "@/lib/calculations/transactions";
 import { formatCurrencyCompact } from "@/lib/formatters/currency";
 import { toISODateRange } from "@/lib/date-range/presets";
-import { ChartTooltip } from "./chart-tooltip";
 
 const TOP_N = 6;
+
+const chartConfig = {
+  total: { label: "Spent", color: "var(--primary)" },
+} satisfies ChartConfig;
 
 export function TopCategoriesChart() {
   const router = useRouter();
@@ -38,7 +47,11 @@ export function TopCategoriesChart() {
           className="h-64 justify-center border-none py-0"
         />
       ) : (
-        <ResponsiveContainer width="100%" height={Math.max(200, top.length * 40)}>
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto w-full"
+          style={{ height: Math.max(200, top.length * 40) }}
+        >
           <BarChart
             data={top}
             layout="vertical"
@@ -54,10 +67,9 @@ export function TopCategoriesChart() {
               width={92}
               tick={{ fontSize: 12, fill: "var(--foreground)" }}
             />
-            <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--muted)" }} />
+            <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ChartTooltipContent />} />
             <Bar
               dataKey="total"
-              name="Spent"
               radius={[0, 4, 4, 0]}
               maxBarSize={20}
               onClick={(entry) => {
@@ -77,7 +89,7 @@ export function TopCategoriesChart() {
               ))}
             </Bar>
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       )}
     </ChartCard>
   );

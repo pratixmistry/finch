@@ -8,6 +8,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -50,9 +51,9 @@ export function InvestmentCard({
             <div className="flex items-center gap-1.5">
               <p className="truncate text-sm font-semibold">{investment.name}</p>
               {!investment.isActive && (
-                <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium">
+                <Badge variant="secondary" className="h-4 shrink-0 px-1.5 text-[10px]">
                   Archived
-                </span>
+                </Badge>
               )}
             </div>
             <p className="text-muted-foreground text-xs">

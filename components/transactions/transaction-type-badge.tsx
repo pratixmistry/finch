@@ -1,4 +1,5 @@
 import { ArrowDownCircle, ArrowLeftRight, ArrowUpCircle, LineChart } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { TransactionType } from "@/types";
 
@@ -12,15 +13,10 @@ const CONFIG: Record<TransactionType, { label: string; icon: typeof ArrowUpCircl
 export function TransactionTypeBadge({ type }: { type: TransactionType }) {
   const { label, icon: Icon, className } = CONFIG[type];
   return (
-    <span
-      className={cn(
-        "inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-        className
-      )}
-    >
-      <Icon className="size-3" />
+    <Badge variant="secondary" className={cn("border-transparent", className)}>
+      <Icon />
       {label}
-    </span>
+    </Badge>
   );
 }
 

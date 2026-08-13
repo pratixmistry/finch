@@ -2,26 +2,23 @@
 
 import * as React from "react";
 import { subMonths, subQuarters, subYears } from "date-fns";
-import {
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  Legend,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useTransactionsForRange } from "@/hooks/use-transactions";
 import { buildCashFlowSeries, CASH_FLOW_BUCKET_LIMIT, type CashFlowGranularity } from "@/lib/calculations/series";
 import { formatCurrencyCompact } from "@/lib/formatters/currency";
 import { toISODateRange } from "@/lib/date-range/presets";
 import { ChartCard } from "@/components/dashboard/chart-card";
-import { ChartTooltip } from "./chart-tooltip";
 import { BarChart3 } from "lucide-react";
 
 const RANGE_BY_GRANULARITY: Record<CashFlowGranularity, (d: Date) => Date> = {
@@ -29,6 +26,12 @@ const RANGE_BY_GRANULARITY: Record<CashFlowGranularity, (d: Date) => Date> = {
   quarter: (d) => subQuarters(d, 8),
   year: (d) => subYears(d, 5),
 };
+
+const chartConfig = {
+  income: { label: "Income", color: "var(--income)" },
+  expense: { label: "Expenses", color: "var(--expense)" },
+  net: { label: "Savings", color: "var(--primary)" },
+} satisfies ChartConfig;
 
 export function IncomeExpenseChart() {
   const [granularity, setGranularity] = React.useState<CashFlowGranularity>("month");
@@ -69,7 +72,7 @@ export function IncomeExpenseChart() {
           className="h-72 justify-center border-none py-0"
         />
       ) : (
-        <ResponsiveContainer width="100%" height={288}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-72 w-full">
           <ComposedChart data={series} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
             <XAxis
@@ -85,25 +88,20 @@ export function IncomeExpenseChart() {
               tickFormatter={(v) => formatCurrencyCompact(v)}
               width={56}
             />
-            <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--muted)" }} />
-            <Legend
-              iconType="circle"
-              iconSize={8}
-              wrapperStyle={{ fontSize: 12, color: "var(--muted-foreground)" }}
-            />
-            <Bar dataKey="income" name="Income" fill="var(--income)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-            <Bar dataKey="expense" name="Expenses" fill="var(--expense)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+            <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+            <Bar dataKey="expense" fill="var(--color-expense)" radius={[4, 4, 0, 0]} maxBarSize={24} />
             <Line
               type="monotone"
               dataKey="net"
-              name="Savings"
-              stroke="var(--primary)"
+              stroke="var(--color-net)"
               strokeWidth={2}
-              dot={{ r: 3, fill: "var(--primary)", strokeWidth: 0 }}
+              dot={{ r: 3, fill: "var(--color-net)", strokeWidth: 0 }}
               activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
             />
           </ComposedChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       )}
     </ChartCard>
   );

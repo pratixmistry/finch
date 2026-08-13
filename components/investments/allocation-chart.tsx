@@ -1,8 +1,14 @@
 "use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Cell, Pie, PieChart } from "recharts";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { ASSET_TYPE_LABEL } from "./investment-asset-icon";
@@ -19,6 +25,13 @@ const ASSET_TYPE_COLOR: Record<InvestmentAssetType, string> = {
   bond: "#ec4899",
   other: "#64748b",
 };
+
+const chartConfig = Object.fromEntries(
+  Object.entries(ASSET_TYPE_LABEL).map(([assetType, label]) => [
+    assetType,
+    { label, color: ASSET_TYPE_COLOR[assetType as InvestmentAssetType] },
+  ])
+) satisfies ChartConfig;
 
 export function AllocationChart({ investments, isLoading }: { investments: Investment[]; isLoading: boolean }) {
   const allocation = allocationByAssetType(investments);
@@ -37,7 +50,7 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
       ) : (
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <div className="relative h-52 w-52 shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
                 <Pie
                   data={allocation}
@@ -53,22 +66,32 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
                     <Cell key={entry.assetType} fill={ASSET_TYPE_COLOR[entry.assetType]} />
                   ))}
                 </Pie>
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const entry = payload[0].payload as (typeof allocation)[number];
-                    return (
-                      <div className="bg-popover text-popover-foreground rounded-lg border px-3 py-2 text-xs shadow-md">
-                        <p className="font-medium">{ASSET_TYPE_LABEL[entry.assetType]}</p>
-                        <p className="text-muted-foreground tabular-nums">
-                          {formatCurrency(entry.value)} · {entry.percentage.toFixed(1)}%
-                        </p>
-                      </div>
-                    );
-                  }}
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(_value, _name, item) => {
+                        const entry = item.payload as (typeof allocation)[number];
+                        return (
+                          <div className="flex w-full items-center gap-2">
+                            <span
+                              className="size-2.5 shrink-0 rounded-full"
+                              style={{ backgroundColor: ASSET_TYPE_COLOR[entry.assetType] }}
+                            />
+                            <span className="text-muted-foreground flex-1">
+                              {ASSET_TYPE_LABEL[entry.assetType]}
+                            </span>
+                            <span className="font-medium tabular-nums">
+                              {formatCurrency(entry.value)} · {entry.percentage.toFixed(1)}%
+                            </span>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
                 />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <p className="text-muted-foreground text-[11px]">Total</p>
               <p className="text-sm font-semibold tabular-nums">{formatCurrency(total)}</p>
