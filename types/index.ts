@@ -81,6 +81,11 @@ export interface Investment {
   quantity: number;
   averageBuyPrice: number;
   currentPrice: number;
+  // Recurring deposit only — null for every other asset type.
+  rdMonthlyAmount: number | null;
+  rdInterestRate: number | null;
+  rdTenureMonths: number | null;
+  rdStartDate: string | null;
   isActive: boolean;
   account?: Pick<Account, "id" | "name">;
 }

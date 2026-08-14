@@ -78,6 +78,10 @@ export function mapInvestment(row: InvestmentRow): Investment {
     quantity: Number(row.quantity),
     averageBuyPrice: Number(row.average_buy_price),
     currentPrice: Number(row.current_price),
+    rdMonthlyAmount: row.rd_monthly_amount === null ? null : Number(row.rd_monthly_amount),
+    rdInterestRate: row.rd_interest_rate === null ? null : Number(row.rd_interest_rate),
+    rdTenureMonths: row.rd_tenure_months,
+    rdStartDate: row.rd_start_date,
     isActive: row.is_active,
     account: row.account ?? undefined,
   };

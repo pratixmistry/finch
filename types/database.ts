@@ -22,6 +22,7 @@ export type InvestmentAssetType =
   | "etf"
   | "crypto"
   | "fixed_deposit"
+  | "recurring_deposit"
   | "bond"
   | "other";
 
@@ -147,6 +148,10 @@ export interface Database {
           quantity: string;
           average_buy_price: string;
           current_price: string;
+          rd_monthly_amount: string | null;
+          rd_interest_rate: string | null;
+          rd_tenure_months: number | null;
+          rd_start_date: string | null;
           is_active: boolean;
           created_at: string;
           updated_at: string;
@@ -161,6 +166,10 @@ export interface Database {
           quantity?: number | string;
           average_buy_price?: number | string;
           current_price?: number | string;
+          rd_monthly_amount?: number | string | null;
+          rd_interest_rate?: number | string | null;
+          rd_tenure_months?: number | null;
+          rd_start_date?: string | null;
           is_active?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["investments"]["Insert"]>;

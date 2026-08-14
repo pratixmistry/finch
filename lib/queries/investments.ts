@@ -17,6 +17,16 @@ export async function getInvestments(supabase: Client, opts: { includeArchived?:
   return data.map(mapInvestment);
 }
 
+function rdColumns(input: InvestmentFormValues) {
+  const isRd = input.assetType === "recurring_deposit";
+  return {
+    rd_monthly_amount: isRd ? input.rdMonthlyAmount : null,
+    rd_interest_rate: isRd ? input.rdInterestRate : null,
+    rd_tenure_months: isRd ? input.rdTenureMonths : null,
+    rd_start_date: isRd ? input.rdStartDate || null : null,
+  };
+}
+
 export async function createInvestment(supabase: Client, userId: string, input: InvestmentFormValues) {
   const { data, error } = await supabase
     .from("investments")
@@ -29,6 +39,7 @@ export async function createInvestment(supabase: Client, userId: string, input: 
       quantity: input.quantity,
       average_buy_price: input.averageBuyPrice,
       current_price: input.currentPrice,
+      ...rdColumns(input),
     })
     .select(INVESTMENT_SELECT)
     .single();
@@ -47,6 +58,7 @@ export async function updateInvestment(supabase: Client, id: string, input: Inve
       quantity: input.quantity,
       average_buy_price: input.averageBuyPrice,
       current_price: input.currentPrice,
+      ...rdColumns(input),
     })
     .eq("id", id)
     .select(INVESTMENT_SELECT)

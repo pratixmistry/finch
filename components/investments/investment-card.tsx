@@ -18,8 +18,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ASSET_TYPE_ICON, ASSET_TYPE_LABEL } from "./investment-asset-icon";
-import { investmentMetrics } from "@/lib/calculations";
+import { investmentMetrics, rdProgress } from "@/lib/calculations";
 import { formatCurrency } from "@/lib/formatters/currency";
+import { formatMonthYear } from "@/lib/formatters/date";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import type { Investment } from "@/types";
 
@@ -39,6 +41,16 @@ export function InvestmentCard({
   const Icon = ASSET_TYPE_ICON[investment.assetType];
   const { marketValue, gainLoss, gainLossPercent } = investmentMetrics(investment);
   const isGain = gainLoss >= 0;
+  const isRd = investment.assetType === "recurring_deposit";
+  const rd =
+    isRd && investment.rdMonthlyAmount && investment.rdInterestRate !== null && investment.rdTenureMonths && investment.rdStartDate
+      ? rdProgress({
+          monthlyAmount: investment.rdMonthlyAmount,
+          annualRatePercent: investment.rdInterestRate,
+          tenureMonths: investment.rdTenureMonths,
+          startDate: investment.rdStartDate,
+        })
+      : null;
 
   return (
     <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
@@ -70,11 +82,15 @@ export function InvestmentCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onLogBuy}>Log buy</DropdownMenuItem>
-            <DropdownMenuItem onClick={onLogSell} disabled={investment.quantity <= 0}>
-              Log sell
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {!isRd && (
+              <>
+                <DropdownMenuItem onClick={onLogBuy}>Log buy</DropdownMenuItem>
+                <DropdownMenuItem onClick={onLogSell} disabled={investment.quantity <= 0}>
+                  Log sell
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem onClick={onEdit}>
               <Pencil className="size-4" />
               Edit
@@ -103,11 +119,28 @@ export function InvestmentCard({
             {isGain ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
             {formatCurrency(Math.abs(gainLoss))} ({Math.abs(gainLossPercent).toFixed(1)}%)
           </span>
-          <span className="text-muted-foreground">
-            {investment.quantity} @ {formatCurrency(investment.currentPrice)}
-          </span>
+          {!rd && (
+            <span className="text-muted-foreground">
+              {investment.quantity} @ {formatCurrency(investment.currentPrice)}
+            </span>
+          )}
         </div>
       </div>
+
+      {rd && (
+        <div className="mt-3 space-y-1.5">
+          <Progress value={(rd.elapsedMonths / (rd.elapsedMonths + rd.remainingMonths)) * 100} className="h-1.5" />
+          <div className="text-muted-foreground flex items-center justify-between text-[11px]">
+            <span>
+              {formatCurrency(investment.rdMonthlyAmount ?? 0)}/mo · {rd.elapsedMonths}/{rd.elapsedMonths + rd.remainingMonths} mo
+            </span>
+            <span>
+              {rd.isMatured ? "Matured" : `Matures ${formatMonthYear(rd.maturityDate)}`} ·{" "}
+              {formatCurrency(rd.maturityValue)}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

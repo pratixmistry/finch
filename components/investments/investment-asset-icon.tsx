@@ -1,4 +1,14 @@
-import { Banknote, Bitcoin, Building2, Landmark, LineChart, PieChart, Receipt, type LucideIcon } from "lucide-react";
+import {
+  Banknote,
+  Bitcoin,
+  Building2,
+  Landmark,
+  LineChart,
+  PieChart,
+  Receipt,
+  Repeat,
+  type LucideIcon,
+} from "lucide-react";
 import type { InvestmentAssetType } from "@/types";
 
 export const ASSET_TYPE_ICON: Record<InvestmentAssetType, LucideIcon> = {
@@ -7,6 +17,7 @@ export const ASSET_TYPE_ICON: Record<InvestmentAssetType, LucideIcon> = {
   etf: Building2,
   crypto: Bitcoin,
   fixed_deposit: Landmark,
+  recurring_deposit: Repeat,
   bond: Receipt,
   other: Banknote,
 };
@@ -17,6 +28,7 @@ export const ASSET_TYPE_LABEL: Record<InvestmentAssetType, string> = {
   etf: "ETF",
   crypto: "Crypto",
   fixed_deposit: "Fixed Deposit",
+  recurring_deposit: "Recurring Deposit",
   bond: "Bond",
   other: "Other",
 };

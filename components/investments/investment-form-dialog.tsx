@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePickerField } from "@/components/shared/date-picker-field";
 import { useAccounts } from "@/hooks/use-accounts";
 import { useCreateInvestment, useUpdateInvestment } from "@/hooks/use-investments";
 import {
@@ -44,6 +45,9 @@ import {
   INVESTMENT_ASSET_TYPE_OPTIONS,
   type InvestmentFormValues,
 } from "@/lib/validations/investment";
+import { rdMaturityValue } from "@/lib/calculations";
+import { formatCurrency } from "@/lib/formatters/currency";
+import { toInputDate } from "@/lib/formatters/date";
 import type { Investment } from "@/types";
 
 function toDefaults(investment?: Investment): InvestmentFormValues {
@@ -55,6 +59,10 @@ function toDefaults(investment?: Investment): InvestmentFormValues {
     quantity: investment?.quantity ?? 0,
     averageBuyPrice: investment?.averageBuyPrice ?? 0,
     currentPrice: investment?.currentPrice ?? 0,
+    rdMonthlyAmount: investment?.rdMonthlyAmount ?? 0,
+    rdInterestRate: investment?.rdInterestRate ?? 0,
+    rdTenureMonths: investment?.rdTenureMonths ?? 0,
+    rdStartDate: investment?.rdStartDate ?? toInputDate(new Date()),
   };
 }
 
@@ -89,13 +97,26 @@ export function InvestmentFormDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, investment?.id]);
 
+  const assetType = form.watch("assetType");
+  const isRd = assetType === "recurring_deposit";
+  const rdMonthlyAmount = form.watch("rdMonthlyAmount");
+  const rdInterestRate = form.watch("rdInterestRate");
+  const rdTenureMonths = form.watch("rdTenureMonths");
+  const projectedMaturity =
+    isRd && rdMonthlyAmount && rdTenureMonths
+      ? rdMaturityValue(rdMonthlyAmount, rdInterestRate ?? 0, rdTenureMonths)
+      : null;
+
   async function onSubmit(values: InvestmentFormValues) {
+    const payload: InvestmentFormValues = values.assetType === "recurring_deposit"
+      ? { ...values, quantity: 0, averageBuyPrice: 0, currentPrice: 0 }
+      : values;
     try {
       if (isEdit && investment) {
-        await updateInvestment.mutateAsync({ id: investment.id, input: values });
+        await updateInvestment.mutateAsync({ id: investment.id, input: payload });
         toast.success("Holding updated");
       } else {
-        await createInvestment.mutateAsync(values);
+        await createInvestment.mutateAsync(payload);
         toast.success("Holding added");
       }
       setOpen(false);
@@ -113,7 +134,7 @@ export function InvestmentFormDialog({
           <DialogDescription>
             {isEdit
               ? "Update this holding's details and current price."
-              : "Add a stock, fund, or other asset to your portfolio."}
+              : "Add a stock, fund, deposit, or other asset to your portfolio."}
           </DialogDescription>
         </DialogHeader>
 
@@ -159,21 +180,23 @@ export function InvestmentFormDialog({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="symbol"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Symbol <span className="text-muted-foreground font-normal">(optional)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. NIFTYBEES" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {!isRd && (
+                <FormField
+                  control={form.control}
+                  name="symbol"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Symbol <span className="text-muted-foreground font-normal">(optional)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. NIFTYBEES" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             <FormField
@@ -201,88 +224,197 @@ export function InvestmentFormDialog({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.000001"
-                        disabled={isEdit}
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        value={field.value === 0 ? "" : field.value}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {isRd ? (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="rdMonthlyAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Monthly amount</FormLabel>
+                        <FormControl>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <InputGroupText>₹</InputGroupText>
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              type="number"
+                              inputMode="decimal"
+                              step="0.01"
+                              placeholder="0.00"
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              value={field.value === 0 ? "" : field.value}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="averageBuyPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Avg. buy price</FormLabel>
-                    <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <InputGroupText>₹</InputGroupText>
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          type="number"
-                          inputMode="decimal"
-                          step="0.01"
-                          disabled={isEdit}
-                          {...field}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          value={field.value === 0 ? "" : field.value}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="rdInterestRate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interest rate</FormLabel>
+                        <FormControl>
+                          <InputGroup>
+                            <InputGroupInput
+                              type="number"
+                              inputMode="decimal"
+                              step="0.01"
+                              placeholder="0.00"
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              value={field.value === 0 ? "" : field.value}
+                            />
+                            <InputGroupAddon align="inline-end">
+                              <InputGroupText>% p.a.</InputGroupText>
+                            </InputGroupAddon>
+                          </InputGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            {isEdit && (
-              <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
-                Quantity and average buy price update automatically when you log a buy or sell.
-              </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="rdTenureMonths"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tenure</FormLabel>
+                        <FormControl>
+                          <InputGroup>
+                            <InputGroupInput
+                              type="number"
+                              inputMode="numeric"
+                              step="1"
+                              placeholder="12"
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              value={field.value === 0 ? "" : field.value}
+                            />
+                            <InputGroupAddon align="inline-end">
+                              <InputGroupText>months</InputGroupText>
+                            </InputGroupAddon>
+                          </InputGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="rdStartDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Start date</FormLabel>
+                        <DatePickerField value={field.value ?? ""} onChange={field.onChange} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {projectedMaturity !== null && (
+                  <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
+                    Projected maturity value: <span className="text-foreground font-medium">{formatCurrency(projectedMaturity)}</span>
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            inputMode="decimal"
+                            step="0.000001"
+                            disabled={isEdit}
+                            {...field}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            value={field.value === 0 ? "" : field.value}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="averageBuyPrice"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Avg. buy price</FormLabel>
+                        <FormControl>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <InputGroupText>₹</InputGroupText>
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              type="number"
+                              inputMode="decimal"
+                              step="0.01"
+                              disabled={isEdit}
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              value={field.value === 0 ? "" : field.value}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {isEdit && (
+                  <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
+                    Quantity and average buy price update automatically when you log a buy or sell.
+                  </p>
+                )}
+
+                <FormField
+                  control={form.control}
+                  name="currentPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current price</FormLabel>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <InputGroupText>₹</InputGroupText>
+                          </InputGroupAddon>
+                          <InputGroupInput
+                            type="number"
+                            inputMode="decimal"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            value={field.value === 0 ? "" : field.value}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
             )}
-
-            <FormField
-              control={form.control}
-              name="currentPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Current price</FormLabel>
-                  <FormControl>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <InputGroupText>₹</InputGroupText>
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        type="number"
-                        inputMode="decimal"
-                        step="0.01"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        value={field.value === 0 ? "" : field.value}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <DialogFooter>
               <Button type="submit" disabled={isPending}>

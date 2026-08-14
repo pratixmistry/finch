@@ -4,6 +4,8 @@ import {
   applyInvestmentTxn,
   investmentMetrics,
   portfolioSummary,
+  rdMaturityValue,
+  rdProgress,
 } from "@/lib/calculations/investments";
 import type { Investment } from "@/types";
 
@@ -18,6 +20,10 @@ function holding(overrides: Partial<Investment>): Investment {
     quantity: 0,
     averageBuyPrice: 0,
     currentPrice: 0,
+    rdMonthlyAmount: null,
+    rdInterestRate: null,
+    rdTenureMonths: null,
+    rdStartDate: null,
     isActive: true,
     ...overrides,
   };
@@ -56,9 +62,17 @@ describe("applyInvestmentTxn", () => {
   });
 });
 
+const LUMP_SUM_FIELDS = { rdMonthlyAmount: null, rdInterestRate: null, rdTenureMonths: null, rdStartDate: null } as const;
+
 describe("investmentMetrics", () => {
   it("computes market value, cost basis, and gain/loss", () => {
-    const metrics = investmentMetrics({ quantity: 10, averageBuyPrice: 200, currentPrice: 240 });
+    const metrics = investmentMetrics({
+      assetType: "stock",
+      quantity: 10,
+      averageBuyPrice: 200,
+      currentPrice: 240,
+      ...LUMP_SUM_FIELDS,
+    });
     expect(metrics.marketValue).toBe(2400);
     expect(metrics.costBasis).toBe(2000);
     expect(metrics.gainLoss).toBe(400);
@@ -66,14 +80,43 @@ describe("investmentMetrics", () => {
   });
 
   it("gainLossPercent is 0 when cost basis is 0 (no position held)", () => {
-    const metrics = investmentMetrics({ quantity: 0, averageBuyPrice: 0, currentPrice: 240 });
+    const metrics = investmentMetrics({
+      assetType: "stock",
+      quantity: 0,
+      averageBuyPrice: 0,
+      currentPrice: 240,
+      ...LUMP_SUM_FIELDS,
+    });
     expect(metrics.gainLossPercent).toBe(0);
   });
 
   it("reports a loss when current price is below the average buy price", () => {
-    const metrics = investmentMetrics({ quantity: 10, averageBuyPrice: 200, currentPrice: 150 });
+    const metrics = investmentMetrics({
+      assetType: "stock",
+      quantity: 10,
+      averageBuyPrice: 200,
+      currentPrice: 150,
+      ...LUMP_SUM_FIELDS,
+    });
     expect(metrics.gainLoss).toBe(-500);
     expect(metrics.gainLossPercent).toBe(-25);
+  });
+
+  it("derives market value and cost basis from time elapsed for a recurring deposit, ignoring quantity/price", () => {
+    const metrics = investmentMetrics({
+      assetType: "recurring_deposit",
+      quantity: 0,
+      averageBuyPrice: 0,
+      currentPrice: 0,
+      rdMonthlyAmount: 5000,
+      rdInterestRate: 7,
+      rdTenureMonths: 12,
+      rdStartDate: "2025-01-01",
+    });
+    // as of "now" (far past maturity in test time), it should be fully matured
+    expect(metrics.costBasis).toBe(60000); // 5000 * 12
+    expect(metrics.marketValue).toBeCloseTo(rdMaturityValue(5000, 7, 12), 6);
+    expect(metrics.gainLoss).toBeGreaterThan(0);
   });
 });
 
@@ -96,6 +139,88 @@ describe("portfolioSummary", () => {
       gainLoss: 0,
       gainLossPercent: 0,
     });
+  });
+});
+
+describe("rdMaturityValue", () => {
+  it("matches the standard quarterly-compounding RD formula for a known case", () => {
+    // 5000/mo for 12 months at 7% p.a. -> ~62,310 (verified against standard RD calculators)
+    expect(rdMaturityValue(5000, 7, 12)).toBeCloseTo(62310, -1);
+  });
+
+  it("falls back to simple total deposited when the interest rate is 0", () => {
+    expect(rdMaturityValue(1000, 0, 6)).toBe(6000);
+  });
+
+  it("is 0 for a non-positive monthly amount or tenure", () => {
+    expect(rdMaturityValue(0, 7, 12)).toBe(0);
+    expect(rdMaturityValue(1000, 7, 0)).toBe(0);
+  });
+
+  it("grows with a higher interest rate, all else equal", () => {
+    const low = rdMaturityValue(2000, 5, 24);
+    const high = rdMaturityValue(2000, 9, 24);
+    expect(high).toBeGreaterThan(low);
+  });
+});
+
+describe("rdProgress", () => {
+  it("reports zero elapsed and zero value on the start date itself", () => {
+    const today = new Date("2026-01-15T00:00:00");
+    const progress = rdProgress(
+      { monthlyAmount: 2000, annualRatePercent: 6, tenureMonths: 12, startDate: "2026-01-15" },
+      today
+    );
+    expect(progress.elapsedMonths).toBe(0);
+    expect(progress.depositedAmount).toBe(0);
+    expect(progress.currentValue).toBe(0);
+    expect(progress.isMatured).toBe(false);
+  });
+
+  it("counts completed months and grows current value toward the maturity value mid-tenure", () => {
+    const asOf = new Date("2026-07-15T00:00:00");
+    const progress = rdProgress(
+      { monthlyAmount: 2000, annualRatePercent: 6, tenureMonths: 12, startDate: "2026-01-15" },
+      asOf
+    );
+    expect(progress.elapsedMonths).toBe(6);
+    expect(progress.remainingMonths).toBe(6);
+    expect(progress.depositedAmount).toBe(12000);
+    expect(progress.currentValue).toBeGreaterThanOrEqual(progress.depositedAmount);
+    expect(progress.currentValue).toBeLessThan(progress.maturityValue);
+    expect(progress.isMatured).toBe(false);
+  });
+
+  it("caps elapsed months at the tenure and marks the deposit matured once past the end date", () => {
+    const asOf = new Date("2027-06-01T00:00:00");
+    const progress = rdProgress(
+      { monthlyAmount: 2000, annualRatePercent: 6, tenureMonths: 12, startDate: "2026-01-15" },
+      asOf
+    );
+    expect(progress.elapsedMonths).toBe(12);
+    expect(progress.remainingMonths).toBe(0);
+    expect(progress.currentValue).toBeCloseTo(progress.maturityValue, 6);
+    expect(progress.isMatured).toBe(true);
+  });
+
+  it("never reports elapsed months before 0 when the start date is in the future", () => {
+    const asOf = new Date("2026-01-01T00:00:00");
+    const progress = rdProgress(
+      { monthlyAmount: 2000, annualRatePercent: 6, tenureMonths: 12, startDate: "2026-06-01" },
+      asOf
+    );
+    expect(progress.elapsedMonths).toBe(0);
+    expect(progress.depositedAmount).toBe(0);
+  });
+
+  it("computes the maturity date as tenure months after the start date", () => {
+    const progress = rdProgress({
+      monthlyAmount: 1000,
+      annualRatePercent: 5,
+      tenureMonths: 24,
+      startDate: "2026-03-10",
+    });
+    expect(progress.maturityDate).toBe("2028-03-10");
   });
 });
 

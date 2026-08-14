@@ -22,6 +22,7 @@ const ASSET_TYPE_COLOR: Record<InvestmentAssetType, string> = {
   etf: "#06b6d4",
   crypto: "#f59e0b",
   fixed_deposit: "#8b5cf6",
+  recurring_deposit: "#14b8a6",
   bond: "#ec4899",
   other: "#64748b",
 };

@@ -1,4 +1,6 @@
+import { addMonths, differenceInCalendarMonths } from "date-fns";
 import type { Investment, InvestmentAssetType } from "@/types";
+import { toInputDate } from "@/lib/formatters/date";
 
 // A sell doesn't change the average buy price of what's left — only a buy
 // (adding a new lot) shifts the weighted average.
@@ -18,6 +20,65 @@ export function applyInvestmentTxn(
   return { quantity, averageBuyPrice: quantity > 0 ? current.averageBuyPrice : 0 };
 }
 
+// Standard recurring-deposit maturity formula (quarterly compounding, the
+// convention Indian banks use): M = R * [(1+i)^n - 1] / (1 - (1+i)^(-1/3))
+// where R is the monthly installment, i the quarterly rate, and n the number
+// of quarters. Also used to project the value accrued so far by passing the
+// elapsed months in place of the full tenure.
+export function rdMaturityValue(monthlyAmount: number, annualRatePercent: number, tenureMonths: number): number {
+  if (monthlyAmount <= 0 || tenureMonths <= 0) return 0;
+  if (annualRatePercent <= 0) return monthlyAmount * tenureMonths;
+  const i = annualRatePercent / 100 / 4;
+  const n = tenureMonths / 3;
+  return (monthlyAmount * (Math.pow(1 + i, n) - 1)) / (1 - Math.pow(1 + i, -1 / 3));
+}
+
+export interface RdProgress {
+  elapsedMonths: number;
+  remainingMonths: number;
+  depositedAmount: number;
+  currentValue: number;
+  maturityValue: number;
+  maturityDate: string;
+  isMatured: boolean;
+}
+
+export function rdProgress(
+  rd: { monthlyAmount: number; annualRatePercent: number; tenureMonths: number; startDate: string },
+  asOf: Date = new Date()
+): RdProgress {
+  const start = new Date(`${rd.startDate}T00:00:00`);
+  const elapsedMonths = Math.min(rd.tenureMonths, Math.max(0, differenceInCalendarMonths(asOf, start)));
+  const depositedAmount = rd.monthlyAmount * elapsedMonths;
+  const maturityValue = rdMaturityValue(rd.monthlyAmount, rd.annualRatePercent, rd.tenureMonths);
+  const currentValue = Math.max(
+    depositedAmount,
+    rdMaturityValue(rd.monthlyAmount, rd.annualRatePercent, elapsedMonths)
+  );
+  return {
+    elapsedMonths,
+    remainingMonths: rd.tenureMonths - elapsedMonths,
+    depositedAmount,
+    currentValue,
+    maturityValue,
+    maturityDate: toInputDate(addMonths(start, rd.tenureMonths)),
+    isMatured: elapsedMonths >= rd.tenureMonths,
+  };
+}
+
+function rdProgressForInvestment(
+  investment: Pick<Investment, "rdMonthlyAmount" | "rdInterestRate" | "rdTenureMonths" | "rdStartDate">
+): RdProgress | null {
+  const { rdMonthlyAmount, rdInterestRate, rdTenureMonths, rdStartDate } = investment;
+  if (!rdMonthlyAmount || rdInterestRate === null || !rdTenureMonths || !rdStartDate) return null;
+  return rdProgress({
+    monthlyAmount: rdMonthlyAmount,
+    annualRatePercent: rdInterestRate,
+    tenureMonths: rdTenureMonths,
+    startDate: rdStartDate,
+  });
+}
+
 export interface InvestmentMetrics {
   marketValue: number;
   costBasis: number;
@@ -26,10 +87,14 @@ export interface InvestmentMetrics {
 }
 
 export function investmentMetrics(
-  investment: Pick<Investment, "quantity" | "averageBuyPrice" | "currentPrice">
+  investment: Pick<
+    Investment,
+    "assetType" | "quantity" | "averageBuyPrice" | "currentPrice" | "rdMonthlyAmount" | "rdInterestRate" | "rdTenureMonths" | "rdStartDate"
+  >
 ): InvestmentMetrics {
-  const marketValue = investment.quantity * investment.currentPrice;
-  const costBasis = investment.quantity * investment.averageBuyPrice;
+  const rd = investment.assetType === "recurring_deposit" ? rdProgressForInvestment(investment) : null;
+  const marketValue = rd ? rd.currentValue : investment.quantity * investment.currentPrice;
+  const costBasis = rd ? rd.depositedAmount : investment.quantity * investment.averageBuyPrice;
   const gainLoss = marketValue - costBasis;
   return {
     marketValue,
