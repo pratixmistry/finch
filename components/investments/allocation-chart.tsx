@@ -48,7 +48,7 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
           className="h-64 justify-center border-none py-0"
         />
       ) : (
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4">
           <div className="relative h-52 w-52 shrink-0">
             <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
@@ -98,15 +98,15 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
             </div>
           </div>
 
-          <ul className="w-full min-w-0 flex-1 space-y-1.5">
+          <ul className="w-full min-w-0 space-y-1">
             {allocation.map((entry) => (
-              <li key={entry.assetType} className="flex items-center gap-2 px-1.5 py-1 text-xs">
+              <li key={entry.assetType} className="flex items-center gap-2.5 px-2 py-1.5 text-xs">
                 <span
                   className="size-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: ASSET_TYPE_COLOR[entry.assetType] }}
                 />
                 <span className="min-w-0 flex-1 truncate">{ASSET_TYPE_LABEL[entry.assetType]}</span>
-                <span className="text-muted-foreground shrink-0 tabular-nums">
+                <span className="text-muted-foreground w-9 shrink-0 text-right tabular-nums">
                   {entry.percentage.toFixed(0)}%
                 </span>
                 <span className="w-20 shrink-0 text-right font-medium tabular-nums">

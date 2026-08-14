@@ -20,10 +20,19 @@ import { formatCurrencyCompact } from "@/lib/formatters/currency";
 import { toISODateRange } from "@/lib/date-range/presets";
 
 const TOP_N = 6;
+const Y_AXIS_WIDTH = 92;
 
 const chartConfig = {
   total: { label: "Spent", color: "var(--primary)" },
 } satisfies ChartConfig;
+
+function LeftAlignedCategoryTick({ y, payload }: { y: string | number; payload: { value: string } }) {
+  return (
+    <text x={0} y={y} dy={4} textAnchor="start" fontSize={12} fill="var(--foreground)">
+      {payload.value}
+    </text>
+  );
+}
 
 export function TopCategoriesChart() {
   const router = useRouter();
@@ -49,8 +58,8 @@ export function TopCategoriesChart() {
       ) : (
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto w-full"
-          style={{ height: Math.max(200, top.length * 40) }}
+          className="aspect-auto h-full w-full"
+          style={{ minHeight: Math.max(200, top.length * 40) }}
         >
           <BarChart
             data={top}
@@ -64,8 +73,8 @@ export function TopCategoriesChart() {
               dataKey="name"
               tickLine={false}
               axisLine={false}
-              width={92}
-              tick={{ fontSize: 12, fill: "var(--foreground)" }}
+              width={Y_AXIS_WIDTH}
+              tick={LeftAlignedCategoryTick}
             />
             <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ChartTooltipContent />} />
             <Bar

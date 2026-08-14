@@ -69,7 +69,7 @@ export function ExpenseDonutChart() {
           className="h-64 justify-center border-none py-0"
         />
       ) : (
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4">
           <div className="relative h-52 w-52 shrink-0">
             <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
@@ -124,21 +124,21 @@ export function ExpenseDonutChart() {
             </div>
           </div>
 
-          <ul className="w-full min-w-0 flex-1 space-y-1.5">
+          <ul className="w-full min-w-0 space-y-1">
             {breakdown.map((entry) => (
               <li key={entry.categoryId}>
                 <button
                   type="button"
                   disabled={entry.categoryId === "other"}
                   onClick={() => router.push(`/transactions?category=${entry.categoryId}`)}
-                  className="hover:bg-muted flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-left text-xs disabled:cursor-default disabled:hover:bg-transparent"
+                  className="hover:bg-muted flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-xs disabled:cursor-default disabled:hover:bg-transparent"
                 >
                   <span
                     className="size-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: entry.color }}
                   />
                   <span className="min-w-0 flex-1 truncate">{entry.name}</span>
-                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                  <span className="text-muted-foreground w-9 shrink-0 text-right tabular-nums">
                     {entry.percentage.toFixed(0)}%
                   </span>
                   <span className="w-20 shrink-0 text-right font-medium tabular-nums">
