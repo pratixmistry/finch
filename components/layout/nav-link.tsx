@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { NavItem } from "./nav-config";
 
+const ROW =
+  "flex h-11 w-full items-center gap-3 rounded-xl px-3 text-base font-medium outline-none transition-[background-color,color,scale] duration-150 ease-out focus-visible:ring-4 focus-visible:ring-sidebar-ring active:scale-[0.98]";
+
 export function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const pathname = usePathname();
   const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -17,14 +20,11 @@ export function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () =
       <button
         type="button"
         onClick={() => toast("Coming soon", { description: `${item.label} arrives in a future update.` })}
-        className="text-sidebar-foreground/50 hover:bg-sidebar-accent/50 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+        className={cn(ROW, "text-sidebar-foreground/45 hover:bg-sidebar-accent/60")}
       >
-        <Icon className="size-4 shrink-0" strokeWidth={2} />
+        <Icon className="size-6 shrink-0" />
         <span className="flex-1 text-left">{item.label}</span>
-        <Badge
-          variant="outline"
-          className="h-4 border-sidebar-border px-1.5 text-[10px] tracking-wide text-sidebar-foreground/70 uppercase"
-        >
+        <Badge variant="outline" className="border-sidebar-border text-sidebar-foreground/60">
           Soon
         </Badge>
       </button>
@@ -37,13 +37,13 @@ export function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () =
       onClick={onNavigate}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+        ROW,
         isActive
-          ? "bg-sidebar-primary text-sidebar-primary-foreground"
-          : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          ? "bg-sidebar-accent text-sidebar-foreground"
+          : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
       )}
     >
-      <Icon className="size-4 shrink-0" strokeWidth={2} />
+      <Icon className={cn("size-6 shrink-0", isActive && "text-sidebar-primary stroke-2")} />
       {item.label}
     </Link>
   );

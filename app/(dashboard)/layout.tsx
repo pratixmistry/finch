@@ -25,8 +25,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <AppSidebar name={name} email={email} />
         <MobileHeader name={name} email={email} />
         <div className="flex min-h-svh flex-col lg:pl-64">
-          <main className="flex-1 px-4 pt-5 pb-24 lg:px-8 lg:pt-8 lg:pb-10">
-            <div className="mx-auto w-full max-w-7xl">{children}</div>
+          <main className="flex-1 px-4 pt-6 pb-28 sm:px-6 lg:px-10 lg:pt-10 lg:pb-14">
+            <div className="mx-auto w-full max-w-6xl">{children}</div>
           </main>
         </div>
         <MobileBottomNav />

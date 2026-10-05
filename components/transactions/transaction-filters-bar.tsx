@@ -32,15 +32,15 @@ export function TransactionFiltersBar() {
   }, [q]);
 
   return (
-    <div className="flex flex-col gap-2.5">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-48 flex-1">
-          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-56 flex-1">
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2" />
           <Input
             placeholder="Search transactions…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-8"
+            className="pl-11"
           />
         </div>
 
@@ -48,7 +48,7 @@ export function TransactionFiltersBar() {
           value={filters.type}
           onValueChange={(v) => filters.update({ type: v as typeof filters.type })}
         >
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="min-w-36 flex-1 sm:flex-none">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -65,7 +65,7 @@ export function TransactionFiltersBar() {
           value={filters.accountId}
           onValueChange={(v) => filters.update({ accountId: v })}
         >
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="min-w-40 flex-1 sm:flex-none">
             <SelectValue placeholder="Account" />
           </SelectTrigger>
           <SelectContent>
@@ -82,7 +82,7 @@ export function TransactionFiltersBar() {
           value={filters.categoryId}
           onValueChange={(v) => filters.update({ categoryId: v })}
         >
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="min-w-40 flex-1 sm:flex-none">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -96,12 +96,12 @@ export function TransactionFiltersBar() {
         </Select>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="w-40">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-36 flex-1 sm:w-44 sm:flex-none">
           <DatePickerField value={filters.from} onChange={(v) => filters.update({ from: v })} />
         </div>
-        <span className="text-muted-foreground text-xs">to</span>
-        <div className="w-40">
+        <span className="text-muted-foreground text-sm">to</span>
+        <div className="min-w-36 flex-1 sm:w-44 sm:flex-none">
           <DatePickerField value={filters.to} onChange={(v) => filters.update({ to: v })} />
         </div>
 
@@ -114,9 +114,9 @@ export function TransactionFiltersBar() {
               setQ("");
               filters.clear();
             }}
-            className="text-muted-foreground h-8"
+            className="text-muted-foreground"
           >
-            <X className="size-3.5" />
+            <X />
             Clear filters
           </Button>
         )}

@@ -3,15 +3,16 @@
 import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArchiveRestore, Archive as ArchiveIcon, ArrowLeft, Pencil, Receipt } from "lucide-react";
+import { ArchiveRestore, Archive as ArchiveIcon, ChevronLeft, Pencil, Receipt } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { IconTile } from "@/components/shared/icon-tile";
 import { AccountFormDialog } from "@/components/accounts/account-form-dialog";
 import { ACCOUNT_TYPE_ICON, ACCOUNT_TYPE_LABEL } from "@/components/accounts/account-type-icon";
 import {
-  TransactionTypeBadge,
+  TransactionIcon,
   transactionAmountClass,
   transactionAmountSign,
 } from "@/components/transactions/transaction-type-badge";
@@ -40,10 +41,10 @@ export default function AccountDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-32 w-full rounded-xl" />
-        <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="space-y-7">
+        <Skeleton className="h-9 w-32 rounded-full" />
+        <Skeleton className="h-44 w-full rounded-2xl" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -54,6 +55,7 @@ export default function AccountDetailPage() {
         icon={Receipt}
         title="Account not found"
         description="It may have been removed."
+        className="surface"
         action={
           <Button variant="outline" asChild>
             <Link href="/accounts">Back to accounts</Link>
@@ -77,37 +79,40 @@ export default function AccountDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <Button variant="ghost" size="sm" className="w-fit" onClick={() => router.push("/accounts")}>
-        <ArrowLeft className="size-4" />
+    <div className="flex flex-col gap-7">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-primary -mb-3 -ml-3 w-fit"
+        onClick={() => router.push("/accounts")}
+      >
+        <ChevronLeft className="size-5" />
         Accounts
       </Button>
 
-      <div className="bg-card rounded-xl p-5 shadow-xs ring-1 ring-foreground/10 sm:p-6">
+      <div className="surface p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
-              <Icon className="size-5" strokeWidth={2} />
-            </div>
+            <IconTile icon={Icon} tone="primary" size="lg" />
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">{account.name}</h1>
-              <p className="text-muted-foreground text-sm">{ACCOUNT_TYPE_LABEL[account.type]}</p>
+              <h1 className="text-xl font-semibold">{account.name}</h1>
+              <p className="text-muted-foreground text-base">{ACCOUNT_TYPE_LABEL[account.type]}</p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
-              <Pencil className="size-4" />
+            <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
+              <Pencil />
               Edit
             </Button>
-            <Button variant="outline" size="sm" onClick={handleToggleActive}>
+            <Button variant="secondary" size="sm" onClick={handleToggleActive}>
               {account.isActive ? (
                 <>
-                  <ArchiveIcon className="size-4" />
+                  <ArchiveIcon />
                   Archive
                 </>
               ) : (
                 <>
-                  <ArchiveRestore className="size-4" />
+                  <ArchiveRestore />
                   Unarchive
                 </>
               )}
@@ -115,7 +120,7 @@ export default function AccountDetailPage() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t pt-5 sm:grid-cols-4">
           <Stat label="Current balance" value={formatCurrency(balance)} />
           <Stat label="Opening balance" value={formatCurrency(account.openingBalance)} />
           <Stat label="Total income" value={formatCurrency(totalIncome(accountTxns))} className="text-income" />
@@ -124,19 +129,21 @@ export default function AccountDetailPage() {
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold">Transaction history</h2>
+        <h2 className="mb-3 text-lg font-semibold">Transaction history</h2>
         {accountTxns.length === 0 ? (
-          <EmptyState icon={Receipt} title="No transactions for this account yet" />
+          <EmptyState icon={Receipt} title="No transactions for this account yet" className="surface" />
         ) : (
-          <ul className="bg-card divide-y rounded-xl shadow-xs ring-1 ring-foreground/10">
+          <ul className="surface py-1">
             {accountTxns
               .slice()
               .sort((a, b) => (a.transactionDate < b.transactionDate ? 1 : -1))
               .map((txn) => (
-                <li key={txn.id} className="flex items-center gap-3 p-3 sm:p-4">
+                <li key={txn.id} className="group/row flex items-center gap-3 px-5">
+                  <TransactionIcon transaction={txn} size="sm" />
+                  <div className="flex min-w-0 flex-1 items-center gap-3 border-b py-3 group-last/row:border-b-0">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{txn.description || "—"}</p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="truncate text-base font-medium">{txn.description || "—"}</p>
+                    <p className="text-muted-foreground truncate text-sm">
                       {formatRelativeDate(txn.transactionDate)}
                       {txn.type === "transfer" && txn.accountId !== account.id
                         ? ` · from ${txn.account?.name ?? "—"}`
@@ -147,9 +154,8 @@ export default function AccountDetailPage() {
                             : ""}
                     </p>
                   </div>
-                  <TransactionTypeBadge type={txn.type} />
                   <p
-                    className={`w-28 shrink-0 text-right text-sm font-semibold tabular-nums ${
+                    className={`shrink-0 text-right text-base font-medium tabular-nums ${
                       txn.type === "transfer" && txn.accountId !== account.id
                         ? "text-income"
                         : transactionAmountClass(txn.type)
@@ -162,6 +168,7 @@ export default function AccountDetailPage() {
                       : transactionAmountSign(txn.type)}
                     {formatCurrency(txn.amount)}
                   </p>
+                  </div>
                 </li>
               ))}
           </ul>
@@ -176,8 +183,8 @@ export default function AccountDetailPage() {
 function Stat({ label, value, className }: { label: string; value: string; className?: string }) {
   return (
     <div>
-      <p className="text-muted-foreground text-xs">{label}</p>
-      <p className={`mt-0.5 text-lg font-semibold tabular-nums ${className ?? ""}`}>{value}</p>
+      <p className="text-muted-foreground text-sm">{label}</p>
+      <p className={`mt-1 truncate text-lg font-semibold tabular-nums ${className ?? ""}`}>{value}</p>
     </div>
   );
 }

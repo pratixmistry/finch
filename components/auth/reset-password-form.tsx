@@ -50,12 +50,12 @@ export function ResetPasswordForm() {
           <CheckCircle2 className="size-6" />
         </div>
         <div className="space-y-1.5">
-          <h2 className="text-2xl font-semibold tracking-tight">Check your email</h2>
-          <p className="text-muted-foreground text-sm">
+          <h2 className="text-2xl font-bold">Check your email</h2>
+          <p className="text-muted-foreground text-base">
             If an account exists for that address, we&apos;ve sent a link to reset your password.
           </p>
         </div>
-        <Button asChild variant="outline" className="w-full">
+        <Button asChild variant="secondary" className="w-full">
           <Link href="/login">Back to sign in</Link>
         </Button>
       </div>
@@ -65,8 +65,8 @@ export function ResetPasswordForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="space-y-1.5">
-        <h2 className="text-2xl font-semibold tracking-tight">Reset your password</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-2xl font-bold">Reset your password</h2>
+        <p className="text-muted-foreground text-base">
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
@@ -90,7 +90,7 @@ export function ResetPasswordForm() {
           {formError && <p className="text-destructive text-sm">{formError}</p>}
 
           <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-            {isPending && <Loader2 className="size-4 animate-spin" />}
+            {isPending && <Loader2 className="animate-spin" />}
             Send reset link
           </Button>
         </form>

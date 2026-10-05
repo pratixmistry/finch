@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MoreHorizontal, Pencil, Receipt, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreHorizontal, Pencil, Receipt, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Table,
@@ -33,7 +33,12 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { useTransactionsPage, useDeleteTransaction } from "@/hooks/use-transactions";
 import { useTransactionFilters } from "@/hooks/use-transaction-filters";
 import { useTransactionSheet } from "@/components/transactions/transaction-sheet-context";
-import { TransactionTypeBadge, transactionAmountClass, transactionAmountSign } from "./transaction-type-badge";
+import {
+  TRANSACTION_TYPE_META,
+  TransactionIcon,
+  transactionAmountClass,
+  transactionAmountSign,
+} from "./transaction-type-badge";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { formatRelativeDate } from "@/lib/formatters/date";
 import type { Transaction } from "@/types";
@@ -76,9 +81,9 @@ export function TransactionsList() {
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
+      <div className="surface space-y-3 p-5">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 w-full" />
+          <Skeleton key={i} className="h-11 w-full" />
         ))}
       </div>
     );
@@ -94,6 +99,7 @@ export function TransactionsList() {
             ? "Try adjusting or clearing your filters."
             : "Start tracking your finances by adding your first transaction."
         }
+        className="surface"
       />
     );
   }
@@ -101,46 +107,47 @@ export function TransactionsList() {
   return (
     <div className={isPlaceholderData ? "opacity-60 transition-opacity" : undefined}>
       {/* Desktop table */}
-      <div className="bg-card hidden overflow-x-auto rounded-xl shadow-xs ring-1 ring-foreground/10 md:block">
+      <div className="surface hidden overflow-hidden md:block">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Account</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>Date</TableHead>
               <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="w-10" />
+              <TableHead className="w-14">
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {transactions.map((txn) => (
-              <TableRow key={txn.id} className="group">
-                <TableCell className="text-muted-foreground whitespace-nowrap">
-                  {formatRelativeDate(txn.transactionDate)}
-                </TableCell>
-                <TableCell className="max-w-56 truncate font-medium">
-                  {txn.description || "—"}
+              <TableRow key={txn.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <TransactionIcon transaction={txn} size="sm" />
+                    <span className="max-w-64 truncate text-base font-medium">
+                      {txn.description || "—"}
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {txn.type === "transfer" ? (
-                    <span>→ {txn.transferAccount?.name ?? "—"}</span>
-                  ) : (
-                    (txn.category?.name ?? "—")
-                  )}
+                  {txn.type === "transfer"
+                    ? `Transfer → ${txn.transferAccount?.name ?? "—"}`
+                    : (txn.category?.name ?? TRANSACTION_TYPE_META[txn.type].label)}
                 </TableCell>
                 <TableCell className="text-muted-foreground">{txn.account?.name ?? "—"}</TableCell>
-                <TableCell>
-                  <TransactionTypeBadge type={txn.type} />
+                <TableCell className="text-muted-foreground">
+                  {formatRelativeDate(txn.transactionDate)}
                 </TableCell>
                 <TableCell
-                  className={`text-right font-medium tabular-nums ${transactionAmountClass(txn.type)}`}
+                  className={`text-right text-base font-medium tabular-nums ${transactionAmountClass(txn.type)}`}
                 >
                   {transactionAmountSign(txn.type)}
                   {formatCurrency(txn.amount)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="py-1 pr-3 pl-0 text-right">
                   <RowActions
                     onEdit={() => openEdit(txn)}
                     onDelete={() => setPendingDelete(txn)}
@@ -152,49 +159,57 @@ export function TransactionsList() {
         </Table>
       </div>
 
-      {/* Mobile cards */}
-      <ul className="space-y-2 md:hidden">
+      {/* Mobile list */}
+      <ul className="surface py-1 md:hidden">
         {transactions.map((txn) => (
-          <li key={txn.id} className="bg-card flex items-center gap-3 rounded-xl p-3 shadow-xs ring-1 ring-foreground/10">
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{txn.description || "—"}</p>
-              <p className="text-muted-foreground truncate text-xs">
-                {formatRelativeDate(txn.transactionDate)} ·{" "}
-                {txn.type === "transfer"
-                  ? `→ ${txn.transferAccount?.name ?? "—"}`
-                  : (txn.category?.name ?? txn.account?.name ?? "—")}
+          <li key={txn.id} className="group/row flex items-center gap-3 pr-2 pl-4">
+            <TransactionIcon transaction={txn} />
+            <div className="flex min-w-0 flex-1 items-center gap-2 border-b py-3 group-last/row:border-b-0">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-base font-medium">{txn.description || "—"}</p>
+                <p className="text-muted-foreground truncate text-sm">
+                  {formatRelativeDate(txn.transactionDate)} ·{" "}
+                  {txn.type === "transfer"
+                    ? `→ ${txn.transferAccount?.name ?? "—"}`
+                    : (txn.category?.name ?? txn.account?.name ?? "—")}
+                </p>
+              </div>
+              <p
+                className={`shrink-0 text-base font-medium tabular-nums ${transactionAmountClass(txn.type)}`}
+              >
+                {transactionAmountSign(txn.type)}
+                {formatCurrency(txn.amount)}
               </p>
+              <RowActions onEdit={() => openEdit(txn)} onDelete={() => setPendingDelete(txn)} />
             </div>
-            <p className={`shrink-0 text-sm font-semibold tabular-nums ${transactionAmountClass(txn.type)}`}>
-              {transactionAmountSign(txn.type)}
-              {formatCurrency(txn.amount)}
-            </p>
-            <RowActions onEdit={() => openEdit(txn)} onDelete={() => setPendingDelete(txn)} />
           </li>
         ))}
       </ul>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-muted-foreground text-xs">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-muted-foreground text-sm tabular-nums">
             Page {filters.page} of {totalPages} · {total} transactions
           </p>
           <div className="flex gap-2">
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               disabled={filters.page <= 1}
               onClick={() => filters.update({ page: filters.page - 1 }, { resetPage: false })}
             >
+              <ChevronLeft />
               Previous
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
+              className="pr-3 has-[>svg]:pl-4"
               disabled={filters.page >= totalPages}
               onClick={() => filters.update({ page: filters.page + 1 }, { resetPage: false })}
             >
               Next
+              <ChevronRight />
             </Button>
           </div>
         </div>
@@ -228,17 +243,17 @@ function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
-          <MoreHorizontal className="size-4" />
+        <Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" aria-label="More options">
+          <MoreHorizontal />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={onEdit}>
-          <Pencil className="size-4" />
+          <Pencil />
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem variant="destructive" onClick={onDelete}>
-          <Trash2 className="size-4" />
+          <Trash2 />
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -42,18 +42,24 @@ export function createCalendarDayButton(daySummaries: Map<string, DaySummary>) {
           !modifiers.range_middle
         }
         className={cn(
-          "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-0.5 border-0 py-1.5 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground",
+          "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-0.5 rounded-xl border-0 py-1.5 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-4 group-data-[focused=true]/day:ring-ring data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground",
           defaultClassNames.day,
           className
         )}
         {...props}
       >
-        <span className="text-sm">{children}</span>
+        <span className="text-base">{children}</span>
         {summary && summary.count > 0 && (
           <span
             className={cn(
-              "text-[9px] leading-none font-medium tabular-nums",
-              net > 0 ? "text-income" : net < 0 ? "text-expense" : "text-muted-foreground"
+              "text-[10px] leading-none font-medium tabular-nums",
+              modifiers.selected
+                ? "text-primary-foreground/85"
+                : net > 0
+                  ? "text-income"
+                  : net < 0
+                    ? "text-expense"
+                    : "text-muted-foreground"
             )}
           >
             {net === 0 ? "±0" : formatCurrencyCompact(net)}

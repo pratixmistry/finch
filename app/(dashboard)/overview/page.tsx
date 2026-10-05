@@ -21,24 +21,23 @@ export default async function OverviewPage() {
 
   return (
     <Suspense>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-7">
         <GreetingHeader name={profile?.fullName ?? ""} />
 
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-muted-foreground text-sm font-medium">Period</h2>
+        <div>
           <DateRangeSelector />
         </div>
 
         <KpiSection />
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <IncomeExpenseChart />
           </div>
           <ExpenseDonutChart />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <SpendingTrendChart />
           <TopCategoriesChart />
         </div>

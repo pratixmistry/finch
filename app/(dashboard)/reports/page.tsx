@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { differenceInCalendarDays } from "date-fns";
+import { PageHeader } from "@/components/shared/page-header";
 import { DateRangeSelector } from "@/components/dashboard/date-range-selector";
 import { IncomeExpenseChart } from "@/components/charts/income-expense-chart";
 import { CashFlowTable } from "@/components/reports/cash-flow-table";
@@ -18,33 +19,26 @@ export default function ReportsPage() {
   const rangeDays = differenceInCalendarDays(range.to, range.from) + 1;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Reports</h1>
-          <p className="text-muted-foreground text-sm">
-            Breakdowns and exports for the selected period.
-          </p>
-        </div>
+    <div className="flex flex-col gap-7">
+      <PageHeader title="Reports" description="Breakdowns and exports for the selected period.">
         <ExportCsvButton transactions={transactions ?? []} from={filters.from} to={filters.to} />
-      </div>
+      </PageHeader>
 
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-muted-foreground text-sm font-medium">Period</h2>
+      <div>
         <DateRangeSelector />
       </div>
 
       <IncomeExpenseChart />
 
-      <div>
-        <h2 className="mb-3 text-sm font-semibold">Cash flow by period</h2>
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">Cash flow by period</h2>
         <CashFlowTable transactions={transactions ?? []} rangeDays={rangeDays} isLoading={isLoading} />
-      </div>
+      </section>
 
-      <div>
-        <h2 className="mb-3 text-sm font-semibold">Expenses by category</h2>
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">Expenses by category</h2>
         <CategoryBreakdownTable transactions={transactions ?? []} isLoading={isLoading} />
-      </div>
+      </section>
     </div>
   );
 }

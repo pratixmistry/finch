@@ -69,9 +69,9 @@ export function ProfileForm() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-11 w-full" />
+        <Skeleton className="h-11 w-full" />
+        <Skeleton className="h-11 w-full" />
       </div>
     );
   }
@@ -187,7 +187,7 @@ export function ProfileForm() {
         </div>
 
         <Button type="submit" disabled={updateProfile.isPending}>
-          {updateProfile.isPending && <Loader2 className="size-4 animate-spin" />}
+          {updateProfile.isPending && <Loader2 className="animate-spin" />}
           Save changes
         </Button>
       </form>

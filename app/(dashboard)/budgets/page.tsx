@@ -3,6 +3,7 @@
 import * as React from "react";
 import { PiggyBank, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -46,24 +47,18 @@ export default function BudgetsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Budgets</h1>
-          <p className="text-muted-foreground text-sm">
-            Spending limits for your categories, tracked against this period.
-          </p>
-        </div>
+    <div className="flex flex-col gap-7">
+      <PageHeader title="Budgets" description="Spending limits for your categories, tracked against this period.">
         <Button onClick={() => setAddOpen(true)}>
-          <Plus className="size-4" />
+          <Plus />
           Add budget
         </Button>
-      </div>
+      </PageHeader>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 w-full rounded-xl" />
+            <Skeleton key={i} className="h-40 w-full rounded-2xl" />
           ))}
         </div>
       ) : !budgets || budgets.length === 0 ? (
@@ -71,10 +66,11 @@ export default function BudgetsPage() {
           icon={PiggyBank}
           title="No budgets yet"
           description="Set a spending limit for a category to start tracking against it."
+          className="surface"
           action={<Button onClick={() => setAddOpen(true)}>Add budget</Button>}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {budgets.map((budget) => (
             <BudgetCard
               key={budget.id}

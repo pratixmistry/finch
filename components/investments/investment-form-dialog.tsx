@@ -324,7 +324,7 @@ export function InvestmentFormDialog({
                 </div>
 
                 {projectedMaturity !== null && (
-                  <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
+                  <p className="text-muted-foreground bg-muted rounded-xl px-3.5 py-3 text-sm">
                     Projected maturity value: <span className="text-foreground font-medium">{formatCurrency(projectedMaturity)}</span>
                   </p>
                 )}
@@ -383,7 +383,7 @@ export function InvestmentFormDialog({
                 </div>
 
                 {isEdit && (
-                  <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
+                  <p className="text-muted-foreground bg-muted rounded-xl px-3.5 py-3 text-sm">
                     Quantity and average buy price update automatically when you log a buy or sell.
                   </p>
                 )}
@@ -418,7 +418,7 @@ export function InvestmentFormDialog({
 
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="size-4 animate-spin" />}
+                {isPending && <Loader2 className="animate-spin" />}
                 {isEdit ? "Save changes" : "Add holding"}
               </Button>
             </DialogFooter>

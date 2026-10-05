@@ -24,7 +24,7 @@ export function TransactionSheet() {
               : "Log income, an expense, an investment, or a transfer between accounts."}
           </SheetDescription>
         </SheetHeader>
-        <div className="px-4 pb-6">
+        <div className="px-6 pb-6">
           {state.open && (
             <TransactionForm
               mode={state.mode}

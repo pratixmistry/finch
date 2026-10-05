@@ -39,8 +39,8 @@ export function ExportCsvButton({
   }
 
   return (
-    <Button variant="outline" onClick={handleExport}>
-      <Download className="size-4" />
+    <Button variant="secondary" onClick={handleExport}>
+      <Download />
       Export CSV
     </Button>
   );

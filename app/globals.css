@@ -7,7 +7,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  /* System font first — SF Pro on Apple devices, which ships its own optical
+     sizing and tracking tables. Geist is the fallback everywhere else. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--font-geist-sans),
+    system-ui, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -54,24 +58,58 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-float: var(--elevation-float);
+}
+
+/* Type scale: three working sizes (14/18, 16/20, 18/22) plus titles. Tracking
+   is size-specific — tighter as text grows, neutral at body sizes. */
+@theme {
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.125rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.25rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.375rem;
+  --text-lg--letter-spacing: -0.01em;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.75rem;
+  --text-xl--letter-spacing: -0.015em;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2.125rem;
+  --text-2xl--letter-spacing: -0.02em;
+  --text-3xl: 2.125rem;
+  --text-3xl--line-height: 2.5rem;
+  --text-3xl--letter-spacing: -0.022em;
+
+  /* Critically damped feel: fast start, long soft settle, no overshoot. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --background: #f5f5f7;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
   --primary: oklch(0.511 0.262 276.966);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --primary-foreground: #ffffff;
+  /* Fills are alpha-based so they read correctly on both the gray page and
+     white cards. */
+  --secondary: rgb(0 0 0 / 0.06);
+  --secondary-foreground: #000000;
+  --muted: rgb(0 0 0 / 0.055);
+  --muted-foreground: #666666;
+  --accent: rgb(0 0 0 / 0.06);
+  --accent-foreground: #000000;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: rgb(0 0 0 / 0.08);
+  --input: rgb(0 0 0 / 0.13);
   --ring: oklch(0.511 0.262 276.966 / 40%);
   --chart-1: oklch(0.511 0.262 276.966);
   --chart-2: #7c3aed;
@@ -89,38 +127,45 @@
   --investment-foreground: #ffffff;
   --transfer: #d97706;
   --transfer-foreground: #ffffff;
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
+  --radius: 0.75rem;
+  --sidebar: #fbfbfd;
+  --sidebar-foreground: #000000;
   --sidebar-primary: oklch(0.511 0.262 276.966);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(0 0 0 / 0.05);
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: rgb(0 0 0 / 0.08);
   --sidebar-ring: oklch(0.511 0.262 276.966 / 40%);
-  --background: oklch(0.978 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Elevation: a hairline plus soft, layered shadows. Bigger surfaces get the
+     deeper "float" shadow so they read as thicker material. */
+  --elevation-card:
+    0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -10px rgb(0 0 0 / 0.08);
+  --elevation-raised:
+    0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.04), 0 16px 36px -14px rgb(0 0 0 / 0.16);
+  --elevation-float:
+    0 0 0 1px rgb(0 0 0 / 0.06), 0 8px 20px -6px rgb(0 0 0 / 0.1),
+    0 28px 64px -16px rgb(0 0 0 / 0.2);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #1c1c1e;
+  --card-foreground: #ffffff;
+  --popover: #242426;
+  --popover-foreground: #ffffff;
   --primary: oklch(0.585 0.233 277.117);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --primary-foreground: #ffffff;
+  --secondary: rgb(255 255 255 / 0.1);
+  --secondary-foreground: #ffffff;
+  --muted: rgb(255 255 255 / 0.09);
+  --muted-foreground: #a1a1a8;
+  --accent: rgb(255 255 255 / 0.1);
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.585 0.233 277.117 / 45%);
+  --border: rgb(255 255 255 / 0.1);
+  --input: rgb(255 255 255 / 0.16);
+  --ring: oklch(0.585 0.233 277.117 / 50%);
   --chart-1: oklch(0.585 0.233 277.117);
   --chart-2: #7c3aed;
   --chart-3: #d97706;
@@ -138,25 +183,53 @@
   --investment-foreground: #ffffff;
   --transfer: #d97706;
   --transfer-foreground: #ffffff;
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar: #0c0c0e;
+  --sidebar-foreground: #ffffff;
   --sidebar-primary: oklch(0.585 0.233 277.117);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.585 0.233 277.117 / 45%);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(255 255 255 / 0.08);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 0.1);
+  --sidebar-ring: oklch(0.585 0.233 277.117 / 50%);
+  --elevation-card: 0 0 0 1px rgb(255 255 255 / 0.07);
+  --elevation-raised: 0 0 0 1px rgb(255 255 255 / 0.14);
+  --elevation-float: 0 0 0 1px rgb(255 255 255 / 0.1), 0 28px 64px -16px rgb(0 0 0 / 0.7);
+}
+
+/* The standard content surface: card fill, large radius, hairline + soft shadow. */
+@utility surface {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--elevation-card);
+}
+
+/* Translucent chrome for bars that content scrolls underneath. */
+@utility material {
+  background-color: color-mix(in oklab, var(--background) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    font-optical-sizing: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+  /* One stroke weight for the whole icon set; utilities (stroke-2 …) can
+     still override it for emphasis. */
+  .lucide {
+    stroke-width: 1.75;
   }
 }
 
@@ -168,5 +241,36 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Reduced transparency: translucent surfaces become solid. */
+@media (prefers-reduced-transparency: reduce) {
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+  }
+  .material {
+    background-color: var(--background);
+  }
+  [data-slot="popover-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="select-content"] {
+    background-color: var(--popover);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgb(0 0 0 / 0.35);
+    --input: rgb(0 0 0 / 0.5);
+    --muted-foreground: #3d3d3d;
+  }
+  .dark {
+    --border: rgb(255 255 255 / 0.4);
+    --input: rgb(255 255 255 / 0.55);
+    --muted-foreground: #d4d4d8;
   }
 }

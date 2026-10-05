@@ -1,14 +1,15 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { IconTile, type IconTileTone } from "@/components/shared/icon-tile";
 import { cn } from "@/lib/utils";
 import type { TrendResult } from "@/lib/calculations/trends";
 
 export function KpiCard({
   label,
   value,
-  icon: Icon,
-  iconClassName,
+  icon,
+  tone = "primary",
   trend,
   isGoodWhenUp = true,
   comparisonLabel = "vs last period",
@@ -17,7 +18,7 @@ export function KpiCard({
   label: string;
   value: string;
   icon: LucideIcon;
-  iconClassName?: string;
+  tone?: IconTileTone;
   trend?: TrendResult;
   isGoodWhenUp?: boolean;
   comparisonLabel?: string;
@@ -27,38 +28,41 @@ export function KpiCard({
     trend && trend.direction !== "flat" ? (trend.direction === "up") === isGoodWhenUp : null;
 
   return (
-    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm font-medium">{label}</p>
-        <div className={cn("flex size-8 items-center justify-center rounded-lg", iconClassName)}>
-          <Icon className="size-4" strokeWidth={2} />
-        </div>
+    <div className="surface @container p-5">
+      <div className="flex items-center gap-2.5">
+        <IconTile icon={icon} tone={tone} size="sm" />
+        <p className="text-muted-foreground truncate text-sm font-medium">{label}</p>
       </div>
 
       {loading ? (
-        <Skeleton className="mt-3 h-8 w-28" />
+        <Skeleton className="mt-4 h-[2.125rem] w-32" />
       ) : (
-        <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{value}</p>
+        <p
+          title={value}
+          className="mt-4 truncate text-2xl font-semibold tabular-nums @max-[12.5rem]:text-xl @max-[12.5rem]:leading-[2.125rem]"
+        >
+          {value}
+        </p>
       )}
 
       {!loading && trend && (
-        <div className="mt-1.5 flex items-center gap-1 text-xs">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm">
           {trend.direction === "flat" || trend.percentage === null ? (
             <span className="text-muted-foreground flex items-center gap-1">
-              <Minus className="size-3" />
+              <Minus className="size-4" />
               {trend.percentage === null ? "New this period" : "No change"}
             </span>
           ) : (
             <span
               className={cn(
-                "flex items-center gap-0.5 font-medium",
+                "flex items-center gap-0.5 font-medium tabular-nums",
                 isGood ? "text-income" : "text-expense"
               )}
             >
               {trend.direction === "up" ? (
-                <ArrowUp className="size-3" />
+                <ArrowUp className="size-4 stroke-2" />
               ) : (
-                <ArrowDown className="size-3" />
+                <ArrowDown className="size-4 stroke-2" />
               )}
               {Math.abs(trend.percentage).toFixed(1)}%
             </span>

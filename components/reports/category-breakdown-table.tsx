@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { IconTile } from "@/components/shared/icon-tile";
 import { CategoryIcon } from "@/components/categories/category-icon";
 import { expenseBreakdownByCategory } from "@/lib/calculations";
 import { formatCurrency } from "@/lib/formatters/currency";
@@ -28,7 +29,7 @@ export function CategoryBreakdownTable({
   const total = breakdown.reduce((sum, e) => sum + e.total, 0);
 
   if (isLoading) {
-    return <Skeleton className="h-48 w-full rounded-xl" />;
+    return <Skeleton className="h-48 w-full rounded-2xl" />;
   }
 
   if (breakdown.length === 0) {
@@ -36,13 +37,13 @@ export function CategoryBreakdownTable({
       <EmptyState
         icon={PieChart}
         title="No expenses in this period"
-        className="rounded-xl border py-14"
+        className="surface"
       />
     );
   }
 
   return (
-    <div className="bg-card overflow-x-auto rounded-xl shadow-xs ring-1 ring-foreground/10">
+    <div className="surface overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
@@ -55,13 +56,10 @@ export function CategoryBreakdownTable({
           {breakdown.map((entry) => (
             <TableRow key={entry.categoryId}>
               <TableCell className="font-medium">
-                <div className="flex items-center gap-2">
-                  <div
-                    className="flex size-6 shrink-0 items-center justify-center rounded-md"
-                    style={{ backgroundColor: `${entry.color}1a`, color: entry.color }}
-                  >
-                    <CategoryIcon name={entry.icon} className="size-3.5" />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <IconTile color={entry.color} size="sm">
+                    <CategoryIcon name={entry.icon} />
+                  </IconTile>
                   {entry.name}
                 </div>
               </TableCell>

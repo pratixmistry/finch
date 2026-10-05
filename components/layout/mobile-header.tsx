@@ -20,31 +20,31 @@ export function MobileHeader({ name, email }: { name: string; email: string }) {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <header className="bg-background/80 sticky top-0 z-30 flex items-center justify-between border-b px-4 py-3 backdrop-blur-sm lg:hidden">
+    <header className="material sticky top-0 z-30 flex h-14 items-center justify-between border-b border-foreground/[0.06] pr-2 pl-4 lg:hidden">
       <Logo />
-      <div className="flex items-center gap-1">
+      <div className="flex items-center">
         <ThemeToggle />
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Open menu">
-              <Menu className="size-5" />
+              <Menu />
             </Button>
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="bg-sidebar text-sidebar-foreground border-sidebar-border flex w-72 flex-col p-0"
+            className="bg-sidebar text-sidebar-foreground flex w-80 max-w-[85vw] flex-col gap-0 p-0"
           >
-            <SheetHeader className="px-4 pt-5 pb-2">
+            <SheetHeader className="p-5 pb-3">
               <SheetTitle asChild>
                 <Logo className="[&_span]:text-sidebar-foreground" />
               </SheetTitle>
             </SheetHeader>
-            <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3">
+            <nav aria-label="Main" className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-1">
               {PRIMARY_NAV_ITEMS.map((item) => (
                 <NavLink key={item.href} item={item} onNavigate={() => setOpen(false)} />
               ))}
             </nav>
-            <div className="space-y-0.5 px-3 pb-2">
+            <div className="flex flex-col gap-1 px-3 pb-3">
               {SECONDARY_NAV_ITEMS.map((item) => (
                 <NavLink key={item.href} item={item} onNavigate={() => setOpen(false)} />
               ))}

@@ -66,7 +66,7 @@ export function ExpenseDonutChart() {
         <EmptyState
           icon={PieChartIcon}
           title="No expenses in this period"
-          className="h-64 justify-center border-none py-0"
+          className="h-64 py-0"
         />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-4">
@@ -119,29 +119,29 @@ export function ExpenseDonutChart() {
               </PieChart>
             </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-muted-foreground text-[11px]">Total</p>
-              <p className="text-sm font-semibold tabular-nums">{formatCurrency(total)}</p>
+              <p className="text-muted-foreground text-xs">Total</p>
+              <p className="text-base font-semibold tabular-nums">{formatCurrency(total)}</p>
             </div>
           </div>
 
-          <ul className="w-full min-w-0 space-y-1">
+          <ul className="w-full min-w-0">
             {breakdown.map((entry) => (
               <li key={entry.categoryId}>
                 <button
                   type="button"
                   disabled={entry.categoryId === "other"}
                   onClick={() => router.push(`/transactions?category=${entry.categoryId}`)}
-                  className="hover:bg-muted flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-xs disabled:cursor-default disabled:hover:bg-transparent"
+                  className="hover:bg-muted focus-visible:ring-ring -mx-2 flex w-[calc(100%+1rem)] items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm transition-colors duration-150 outline-none focus-visible:ring-4 disabled:cursor-default disabled:hover:bg-transparent"
                 >
                   <span
                     className="size-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: entry.color }}
                   />
                   <span className="min-w-0 flex-1 truncate">{entry.name}</span>
-                  <span className="text-muted-foreground w-9 shrink-0 text-right tabular-nums">
+                  <span className="text-muted-foreground w-10 shrink-0 text-right tabular-nums">
                     {entry.percentage.toFixed(0)}%
                   </span>
-                  <span className="w-20 shrink-0 text-right font-medium tabular-nums">
+                  <span className="w-24 shrink-0 text-right font-medium tabular-nums">
                     {formatCurrency(entry.total)}
                   </span>
                 </button>
