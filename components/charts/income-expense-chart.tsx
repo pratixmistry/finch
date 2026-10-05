@@ -46,6 +46,8 @@ export function IncomeExpenseChart() {
   }, [transactions, granularity]);
 
   const hasData = series.some((p) => p.income > 0 || p.expense > 0);
+  // Few periods leave a lot of empty plot, so let the bars take more of it.
+  const barSize = series.length <= 1 ? 40 : series.length <= 3 ? 32 : series.length <= 6 ? 24 : 18;
   const totals = React.useMemo(
     () =>
       series.reduce(
@@ -91,7 +93,10 @@ export function IncomeExpenseChart() {
             <ChartStat label="Expenses" value={formatCurrency(totals.expense)} color="var(--expense)" />
           </div>
 
-          <ChartContainer config={chartConfig} className="aspect-auto min-h-64 w-full flex-1">
+          {/* Absolutely positioned: a percentage height won't resolve against a
+              flex item that only has a min-height. */}
+          <div className="relative min-h-64 flex-1">
+          <ChartContainer config={chartConfig} className="absolute inset-0 aspect-auto h-full w-full">
             <ComposedChart
               accessibilityLayer
               data={series}
@@ -123,16 +128,18 @@ export function IncomeExpenseChart() {
                 dataKey="income"
                 fill="var(--color-income)"
                 radius={[4, 4, 0, 0]}
-                maxBarSize={18}
+                maxBarSize={barSize}
                 animationDuration={500}
               />
               <Bar
                 dataKey="expense"
                 fill="var(--color-expense)"
                 radius={[4, 4, 0, 0]}
-                maxBarSize={18}
+                maxBarSize={barSize}
                 animationDuration={500}
               />
+              {/* A trend needs at least two periods; one point is just a stray dot. */}
+              {series.length > 1 && (
               <Line
                 type="monotone"
                 dataKey="net"
@@ -144,8 +151,10 @@ export function IncomeExpenseChart() {
                 activeDot={{ r: 5, fill: "var(--color-net)", stroke: "var(--card)", strokeWidth: 2 }}
                 animationDuration={500}
               />
+              )}
             </ComposedChart>
           </ChartContainer>
+          </div>
         </>
       )}
     </ChartCard>
