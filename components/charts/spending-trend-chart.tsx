@@ -69,7 +69,10 @@ export function SpendingTrendChart() {
             />
           </div>
 
-          <ChartContainer config={chartConfig} className="aspect-auto min-h-56 w-full flex-1">
+          {/* Absolutely positioned: a percentage height won't resolve against a
+              flex item that only has a min-height. */}
+          <div className="relative min-h-56 flex-1">
+          <ChartContainer config={chartConfig} className="absolute inset-0 aspect-auto h-full w-full">
             <AreaChart
               accessibilityLayer
               data={series}
@@ -118,6 +121,7 @@ export function SpendingTrendChart() {
               />
             </AreaChart>
           </ChartContainer>
+          </div>
         </>
       )}
     </ChartCard>
