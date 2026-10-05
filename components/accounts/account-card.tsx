@@ -90,7 +90,7 @@ export function AccountCard({
       <Link href={`/accounts/${account.id}`} tabIndex={-1} className="mt-5 block outline-none">
         <p
           className={cn(
-            "truncate text-2xl font-semibold tabular-nums",
+            "truncate text-2xl font-semibold",
             isLiability && balance < 0 && "text-expense"
           )}
         >

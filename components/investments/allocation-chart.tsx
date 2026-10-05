@@ -49,17 +49,19 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
           className="h-64 py-0"
         />
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4">
-          <div className="relative h-52 w-52 shrink-0">
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 md:flex-row md:gap-10">
+          <div className="relative size-52 shrink-0">
             <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
                 <Pie
                   data={allocation}
                   dataKey="value"
                   nameKey="assetType"
-                  innerRadius={62}
-                  outerRadius={92}
+                  innerRadius={70}
+                  outerRadius={94}
                   paddingAngle={2}
+                  cornerRadius={4}
+                  animationDuration={500}
                   strokeWidth={2}
                   stroke="var(--card)"
                 >
@@ -74,12 +76,12 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
                       formatter={(_value, _name, item) => {
                         const entry = item.payload as (typeof allocation)[number];
                         return (
-                          <div className="flex w-full items-center gap-2">
+                          <div className="flex w-full items-center gap-2 leading-none">
                             <span
-                              className="size-2.5 shrink-0 rounded-full"
+                              className="size-2 shrink-0 rounded-full"
                               style={{ backgroundColor: ASSET_TYPE_COLOR[entry.assetType] }}
                             />
-                            <span className="text-muted-foreground flex-1">
+                            <span className="text-muted-foreground flex-1 pr-2">
                               {ASSET_TYPE_LABEL[entry.assetType]}
                             </span>
                             <span className="font-medium tabular-nums">
@@ -94,16 +96,16 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
               </PieChart>
             </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-muted-foreground text-xs">Total</p>
-              <p className="text-base font-semibold tabular-nums">{formatCurrency(total)}</p>
+              <p className="text-muted-foreground text-xs">Total value</p>
+              <p className="max-w-32 truncate text-lg font-semibold">{formatCurrency(total)}</p>
             </div>
           </div>
 
-          <ul className="w-full min-w-0">
+          <ul className="w-full min-w-0 md:max-w-md">
             {allocation.map((entry) => (
               <li key={entry.assetType} className="flex items-center gap-2.5 py-2 text-sm">
                 <span
-                  className="size-2.5 shrink-0 rounded-full"
+                  className="size-2 shrink-0 rounded-full"
                   style={{ backgroundColor: ASSET_TYPE_COLOR[entry.assetType] }}
                 />
                 <span className="min-w-0 flex-1 truncate">{ASSET_TYPE_LABEL[entry.assetType]}</span>
