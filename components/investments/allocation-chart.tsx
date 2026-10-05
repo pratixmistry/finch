@@ -46,7 +46,7 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
         <EmptyState
           icon={PieChartIcon}
           title="No holdings yet"
-          className="h-64 justify-center border-none py-0"
+          className="h-64 py-0"
         />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-4">
@@ -94,23 +94,23 @@ export function AllocationChart({ investments, isLoading }: { investments: Inves
               </PieChart>
             </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-muted-foreground text-[11px]">Total</p>
-              <p className="text-sm font-semibold tabular-nums">{formatCurrency(total)}</p>
+              <p className="text-muted-foreground text-xs">Total</p>
+              <p className="text-base font-semibold tabular-nums">{formatCurrency(total)}</p>
             </div>
           </div>
 
-          <ul className="w-full min-w-0 space-y-1">
+          <ul className="w-full min-w-0">
             {allocation.map((entry) => (
-              <li key={entry.assetType} className="flex items-center gap-2.5 px-2 py-1.5 text-xs">
+              <li key={entry.assetType} className="flex items-center gap-2.5 py-2 text-sm">
                 <span
                   className="size-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: ASSET_TYPE_COLOR[entry.assetType] }}
                 />
                 <span className="min-w-0 flex-1 truncate">{ASSET_TYPE_LABEL[entry.assetType]}</span>
-                <span className="text-muted-foreground w-9 shrink-0 text-right tabular-nums">
+                <span className="text-muted-foreground w-10 shrink-0 text-right tabular-nums">
                   {entry.percentage.toFixed(0)}%
                 </span>
-                <span className="w-20 shrink-0 text-right font-medium tabular-nums">
+                <span className="w-24 shrink-0 text-right font-medium tabular-nums">
                   {formatCurrency(entry.value)}
                 </span>
               </li>

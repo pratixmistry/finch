@@ -69,7 +69,7 @@ export function IncomeExpenseChart() {
           icon={BarChart3}
           title="No transactions yet"
           description="Add income and expenses to see your cash flow here."
-          className="h-72 justify-center border-none py-0"
+          className="h-72 py-0"
         />
       ) : (
         <ChartContainer config={chartConfig} className="aspect-auto h-72 w-full">
@@ -90,8 +90,8 @@ export function IncomeExpenseChart() {
             />
             <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} maxBarSize={24} />
-            <Bar dataKey="expense" fill="var(--color-expense)" radius={[4, 4, 0, 0]} maxBarSize={24} />
+            <Bar dataKey="income" fill="var(--color-income)" radius={[6, 6, 0, 0]} maxBarSize={24} />
+            <Bar dataKey="expense" fill="var(--color-expense)" radius={[6, 6, 0, 0]} maxBarSize={24} />
             <Line
               type="monotone"
               dataKey="net"

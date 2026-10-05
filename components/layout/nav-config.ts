@@ -1,13 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  ArrowLeftRight,
   BarChart3,
   CalendarDays,
-  LayoutDashboard,
+  LayoutGrid,
   Landmark,
   PiggyBank,
+  Receipt,
   Settings,
-  Tags,
+  Tag,
   TrendingUp,
 } from "lucide-react";
 
@@ -19,14 +19,14 @@ export interface NavItem {
 }
 
 export const PRIMARY_NAV_ITEMS: NavItem[] = [
-  { href: "/overview", label: "Overview", icon: LayoutDashboard, status: "active" },
-  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight, status: "active" },
+  { href: "/overview", label: "Overview", icon: LayoutGrid, status: "active" },
+  { href: "/transactions", label: "Transactions", icon: Receipt, status: "active" },
   { href: "/calendar", label: "Calendar", icon: CalendarDays, status: "active" },
   { href: "/budgets", label: "Budgets", icon: PiggyBank, status: "active" },
   { href: "/investments", label: "Investments", icon: TrendingUp, status: "active" },
   { href: "/accounts", label: "Accounts", icon: Landmark, status: "active" },
   { href: "/reports", label: "Reports", icon: BarChart3, status: "active" },
-  { href: "/categories", label: "Categories", icon: Tags, status: "active" },
+  { href: "/categories", label: "Categories", icon: Tag, status: "active" },
 ];
 
 export const SECONDARY_NAV_ITEMS: NavItem[] = [

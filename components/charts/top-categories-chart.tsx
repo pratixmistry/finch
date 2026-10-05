@@ -53,7 +53,7 @@ export function TopCategoriesChart() {
         <EmptyState
           icon={BarChart3}
           title="No expenses in this period"
-          className="h-64 justify-center border-none py-0"
+          className="h-64 py-0"
         />
       ) : (
         <ChartContainer
@@ -79,7 +79,7 @@ export function TopCategoriesChart() {
             <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ChartTooltipContent />} />
             <Bar
               dataKey="total"
-              radius={[0, 4, 4, 0]}
+              radius={[0, 6, 6, 0]}
               maxBarSize={20}
               onClick={(entry) => {
                 const categoryId = (entry as unknown as { categoryId: string }).categoryId;

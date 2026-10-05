@@ -40,13 +40,13 @@ export function ThemeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Toggle theme">
-          <ActiveIcon className="size-4" />
+          <ActiveIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {OPTIONS.map(({ value, label, icon: Icon }) => (
           <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
-            <Icon className="size-4" />
+            <Icon />
             {label}
           </DropdownMenuItem>
         ))}

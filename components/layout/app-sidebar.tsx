@@ -9,18 +9,18 @@ import { PRIMARY_NAV_ITEMS, SECONDARY_NAV_ITEMS } from "./nav-config";
 export function AppSidebar({ name, email }: { name: string; email: string }) {
   return (
     <aside className="bg-sidebar text-sidebar-foreground border-sidebar-border fixed inset-y-0 left-0 hidden w-64 flex-col border-r lg:flex">
-      <div className="flex items-center justify-between px-4 py-5">
+      <div className="flex h-18 items-center justify-between pr-3 pl-5">
         <Logo className="[&_span]:text-sidebar-foreground" />
         <ThemeToggle />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3">
+      <nav aria-label="Main" className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-1">
         {PRIMARY_NAV_ITEMS.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>
 
-      <div className="space-y-0.5 px-3 pb-2">
+      <div className="flex flex-col gap-1 px-3 pb-3">
         {SECONDARY_NAV_ITEMS.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}

@@ -40,8 +40,8 @@ export function SignupForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="space-y-1.5">
-        <h2 className="text-2xl font-semibold tracking-tight">Create your account</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-2xl font-bold">Create your account</h2>
+        <p className="text-muted-foreground text-base">
           Start tracking your finances in under a minute.
         </p>
       </div>
@@ -104,7 +104,7 @@ export function SignupForm() {
           {formError && <p className="text-destructive text-sm">{formError}</p>}
 
           <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-            {isPending && <Loader2 className="size-4 animate-spin" />}
+            {isPending && <Loader2 className="animate-spin" />}
             Create account
           </Button>
         </form>

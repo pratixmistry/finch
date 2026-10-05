@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { formatDate } from "@/lib/formatters/date";
@@ -23,17 +22,20 @@ export function DatePickerField({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
+        {/* Styled as a field, not a button, so it lines up with the inputs around it. */}
+        <button
           type="button"
-          variant="outline"
           disabled={disabled}
-          className={cn("w-full justify-start font-normal", !value && "text-muted-foreground")}
+          className={cn(
+            "border-input bg-card focus-visible:border-primary/60 focus-visible:ring-ring/50 aria-expanded:border-primary/60 aria-expanded:ring-ring/50 dark:bg-input/30 flex h-11 w-full items-center gap-2.5 rounded-lg border px-3.5 text-left text-base whitespace-nowrap transition-[border-color,box-shadow] duration-150 ease-out outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:ring-4",
+            !value && "text-muted-foreground"
+          )}
         >
-          <CalendarIcon className="size-4" />
-          {selected ? formatDate(selected) : "Pick a date"}
-        </Button>
+          <CalendarIcon className="text-muted-foreground size-5 shrink-0" />
+          <span className="truncate">{selected ? formatDate(selected) : "Pick a date"}</span>
+        </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
+      <PopoverContent align="start" className="w-auto p-1">
         <Calendar
           mode="single"
           selected={selected}

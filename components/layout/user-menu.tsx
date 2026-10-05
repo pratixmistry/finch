@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Settings } from "lucide-react";
+import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -29,10 +29,10 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="hover:bg-sidebar-accent flex w-full items-center gap-2.5 rounded-lg p-2 text-left transition-colors"
+          className="hover:bg-sidebar-accent aria-expanded:bg-sidebar-accent focus-visible:ring-sidebar-ring flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors duration-150 ease-out outline-none focus-visible:ring-4"
         >
-          <Avatar className="size-8">
-            <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs">
+          <Avatar>
+            <AvatarFallback className="bg-sidebar-primary/12 text-sidebar-primary dark:bg-sidebar-primary/25 dark:text-sidebar-foreground">
               {initials(name || email)}
             </AvatarFallback>
           </Avatar>
@@ -42,20 +42,21 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
             </p>
             <p className="text-sidebar-foreground/60 truncate text-xs">{email}</p>
           </div>
+          <ChevronsUpDown className="text-sidebar-foreground/40 size-4 shrink-0" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" side="top" className="w-56">
+      <DropdownMenuContent align="start" side="top" className="w-60">
         <DropdownMenuLabel className="truncate">{email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/settings">
-            <Settings className="size-4" />
+            <Settings />
             Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => logout()}>
-          <LogOut className="size-4" />
+          <LogOut />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

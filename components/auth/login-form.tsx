@@ -45,19 +45,19 @@ export function LoginForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="space-y-1.5">
-        <h2 className="text-2xl font-semibold tracking-tight">Welcome back</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-2xl font-bold">Welcome back</h2>
+        <p className="text-muted-foreground text-base">
           Sign in to continue to your dashboard.
         </p>
       </div>
 
       {message === "check-your-email" && (
-        <div className="rounded-lg border border-income/30 bg-income/10 px-3 py-2 text-sm text-income">
+        <div className="rounded-xl border border-income/30 bg-income/10 px-3.5 py-3 text-sm text-income">
           Account created — check your email to confirm before signing in.
         </div>
       )}
       {linkError && (
-        <div className="rounded-lg border border-expense/30 bg-expense/10 px-3 py-2 text-sm text-expense">
+        <div className="rounded-xl border border-expense/30 bg-expense/10 px-3.5 py-3 text-sm text-expense">
           That link is invalid or has expired. Please try again.
         </div>
       )}
@@ -86,7 +86,7 @@ export function LoginForm() {
                   <FormLabel>Password</FormLabel>
                   <Link
                     href="/reset-password"
-                    className="text-muted-foreground hover:text-foreground text-xs"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -102,7 +102,7 @@ export function LoginForm() {
           {formError && <p className="text-destructive text-sm">{formError}</p>}
 
           <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-            {isPending && <Loader2 className="size-4 animate-spin" />}
+            {isPending && <Loader2 className="animate-spin" />}
             Sign in
           </Button>
         </form>

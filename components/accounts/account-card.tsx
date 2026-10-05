@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IconTile } from "@/components/shared/icon-tile";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { cn } from "@/lib/utils";
 import { ACCOUNT_TYPE_ICON, ACCOUNT_TYPE_LABEL } from "./account-type-icon";
@@ -30,49 +31,54 @@ export function AccountCard({
   onEdit: () => void;
   onToggleActive: () => void;
 }) {
-  const Icon = ACCOUNT_TYPE_ICON[account.type];
   const isLiability = account.type === "credit_card" || account.type === "loan";
 
   return (
-    <div className="bg-card group relative rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 transition-shadow hover:shadow-md sm:p-5">
-      <div className="flex items-start justify-between">
-        <Link href={`/accounts/${account.id}`} className="flex min-w-0 items-center gap-3">
-          <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
-            <Icon className="size-4" strokeWidth={2} />
-          </div>
+    <div className="surface group relative p-5 transition-[box-shadow,scale] duration-200 ease-out hover:shadow-raised has-[a:active]:scale-[0.99]">
+      <div className="flex items-start justify-between gap-2">
+        <Link
+          href={`/accounts/${account.id}`}
+          className="focus-visible:ring-ring flex min-w-0 items-center gap-3 rounded-lg outline-none focus-visible:ring-4"
+        >
+          <IconTile icon={ACCOUNT_TYPE_ICON[account.type]} tone="primary" />
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className="truncate text-sm font-semibold">{account.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="truncate text-base font-semibold">{account.name}</p>
               {!account.isActive && (
-                <Badge variant="secondary" className="h-4 shrink-0 px-1.5 text-[10px]">
+                <Badge variant="secondary" className="shrink-0">
                   Archived
                 </Badge>
               )}
             </div>
-            <p className="text-muted-foreground text-xs">{ACCOUNT_TYPE_LABEL[account.type]}</p>
+            <p className="text-muted-foreground text-sm">{ACCOUNT_TYPE_LABEL[account.type]}</p>
           </div>
         </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
-              <MoreHorizontal className="size-4" />
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground -mt-1 -mr-2 shrink-0"
+              aria-label="More options"
+            >
+              <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={onEdit}>
-              <Pencil className="size-4" />
+              <Pencil />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onToggleActive}>
               {account.isActive ? (
                 <>
-                  <ArchiveIcon className="size-4" />
+                  <ArchiveIcon />
                   Archive
                 </>
               ) : (
                 <>
-                  <ArchiveRestore className="size-4" />
+                  <ArchiveRestore />
                   Unarchive
                 </>
               )}
@@ -81,23 +87,19 @@ export function AccountCard({
         </DropdownMenu>
       </div>
 
-      <Link href={`/accounts/${account.id}`} className="mt-4 block">
+      <Link href={`/accounts/${account.id}`} tabIndex={-1} className="mt-5 block outline-none">
         <p
           className={cn(
-            "text-2xl font-semibold tracking-tight tabular-nums",
+            "truncate text-2xl font-semibold tabular-nums",
             isLiability && balance < 0 && "text-expense"
           )}
         >
           {formatCurrency(balance)}
         </p>
 
-        <div className="mt-3 flex items-center gap-4 text-xs">
-          <span className="text-income flex items-center gap-1 font-medium">
-            +{formatCurrency(income)}
-          </span>
-          <span className="text-expense flex items-center gap-1 font-medium">
-            -{formatCurrency(expenses)}
-          </span>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+          <span className="text-income font-medium tabular-nums">+{formatCurrency(income)}</span>
+          <span className="text-expense font-medium tabular-nums">-{formatCurrency(expenses)}</span>
           <span className="text-muted-foreground">this month</span>
         </div>
       </Link>

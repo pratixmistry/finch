@@ -3,13 +3,7 @@
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  ArrowDownCircle,
-  ArrowLeftRight,
-  ArrowUpCircle,
-  LineChart,
-  Loader2,
-} from "lucide-react";
+import { Loader2, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePickerField } from "@/components/shared/date-picker-field";
+import { TRANSACTION_TYPE_META } from "@/components/transactions/transaction-type-badge";
 import { cn } from "@/lib/utils";
 import { useAccounts } from "@/hooks/use-accounts";
 import { useCategories } from "@/hooks/use-categories";
@@ -45,26 +40,26 @@ import type { Transaction, TransactionType } from "@/types";
 
 const TYPE_CONFIG: Record<
   TransactionType,
-  { label: string; icon: typeof ArrowDownCircle; activeClass: string }
+  { label: string; icon: LucideIcon; activeClass: string }
 > = {
   expense: {
     label: "Expense",
-    icon: ArrowDownCircle,
+    icon: TRANSACTION_TYPE_META.expense.icon,
     activeClass: "bg-expense/10 border-expense/40 text-expense",
   },
   income: {
     label: "Income",
-    icon: ArrowUpCircle,
+    icon: TRANSACTION_TYPE_META.income.icon,
     activeClass: "bg-income/10 border-income/40 text-income",
   },
   investment: {
     label: "Investment",
-    icon: LineChart,
+    icon: TRANSACTION_TYPE_META.investment.icon,
     activeClass: "bg-investment/10 border-investment/40 text-investment",
   },
   transfer: {
     label: "Transfer",
-    icon: ArrowLeftRight,
+    icon: TRANSACTION_TYPE_META.transfer.icon,
     activeClass: "bg-transfer/10 border-transfer/40 text-transfer",
   },
 };
@@ -165,13 +160,14 @@ export function TransactionForm({
                     <button
                       key={value}
                       type="button"
+                      aria-pressed={active}
                       onClick={() => field.onChange(value)}
                       className={cn(
-                        "flex flex-col items-center gap-1.5 rounded-lg border px-2 py-2.5 text-xs font-medium transition-colors",
+                        "focus-visible:ring-ring flex flex-col items-center gap-1.5 rounded-xl border px-1 py-3 text-xs font-medium transition-[background-color,border-color,color,scale] duration-150 ease-out outline-none focus-visible:ring-4 active:scale-[0.97]",
                         active ? config.activeClass : "text-muted-foreground hover:bg-muted"
                       )}
                     >
-                      <Icon className="size-4" />
+                      <Icon className="size-6" />
                       {config.label}
                     </button>
                   );
@@ -302,7 +298,7 @@ export function TransactionForm({
         )}
 
         {type === "investment" && (
-          <p className="text-muted-foreground bg-muted rounded-lg px-3 py-2 text-xs">
+          <p className="text-muted-foreground bg-muted rounded-xl px-3.5 py-3 text-sm">
             This records the cash moving out of the account. Detailed holdings
             (units, price, P/L) arrive with the Investments module.
           </p>
@@ -341,7 +337,7 @@ export function TransactionForm({
         />
 
         <Button type="submit" size="lg" disabled={isPending} className="mt-2">
-          {isPending && <Loader2 className="size-4 animate-spin" />}
+          {isPending && <Loader2 className="animate-spin" />}
           {mode === "edit" ? "Save changes" : "Add transaction"}
         </Button>
       </form>

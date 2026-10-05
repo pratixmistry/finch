@@ -2,6 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/page-header";
 import { useTransactionSheet } from "@/components/transactions/transaction-sheet-context";
 
 function greeting(hour: number) {
@@ -15,18 +16,19 @@ export function GreetingHeader({ name }: { name: string }) {
   const firstName = name.split(" ")[0];
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+    <PageHeader
+      title={
+        <>
           {greeting(new Date().getHours())}
           {firstName ? `, ${firstName}` : ""}
-        </h1>
-        <p className="text-muted-foreground text-sm">Here&apos;s your financial overview.</p>
-      </div>
-      <Button onClick={() => openCreate()} className="w-fit">
-        <Plus className="size-4" />
+        </>
+      }
+      description="Here's your financial overview."
+    >
+      <Button onClick={() => openCreate()}>
+        <Plus />
         Add transaction
       </Button>
-    </div>
+    </PageHeader>
   );
 }

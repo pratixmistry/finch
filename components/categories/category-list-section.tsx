@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { IconTile } from "@/components/shared/icon-tile";
 import { useCategories, useRemoveCategory, useSetCategoryActive } from "@/hooks/use-categories";
 import { CategoryFormDialog } from "./category-form-dialog";
 import { CategoryIcon } from "./category-icon";
@@ -73,48 +74,46 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
   }
 
   return (
-    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <Button variant="outline" size="sm" onClick={openAdd}>
-          <Plus className="size-3.5" />
+    <section className="surface pt-5 pb-2">
+      <div className="mb-2 flex items-center justify-between gap-3 px-5">
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <Button variant="secondary" size="sm" onClick={openAdd}>
+          <Plus />
           Add
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="space-y-2">
+        <div className="space-y-2 px-5 pb-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-full" />
+            <Skeleton key={i} className="h-11 w-full" />
           ))}
         </div>
       ) : !categories || categories.length === 0 ? (
         <EmptyState icon={Tags} title={`No ${type} categories yet`} className="py-8" />
       ) : (
-        <ul className="divide-y">
+        <ul>
           {categories.map((category) => (
-            <li key={category.id} className="flex items-center gap-3 py-2.5">
-              <div
-                className="flex size-8 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: `${category.color}1a`, color: category.color }}
-              >
-                <CategoryIcon name={category.icon} className="size-4" />
-              </div>
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">{category.name}</span>
+            <li key={category.id} className="group/row flex items-center gap-3 pr-3 pl-5">
+              <IconTile color={category.color} size="sm">
+                <CategoryIcon name={category.icon} />
+              </IconTile>
+              <div className="flex min-w-0 flex-1 items-center gap-3 border-b py-2 group-last/row:border-b-0">
+              <span className="min-w-0 flex-1 truncate text-base font-medium">{category.name}</span>
               {!category.isActive && (
-                <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">
+                <Badge variant="secondary">
                   Archived
                 </Badge>
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
-                    <MoreHorizontal className="size-4" />
+                  <Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" aria-label="More options">
+                    <MoreHorizontal />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => openEdit(category)}>
-                    <Pencil className="size-4" />
+                    <Pencil />
                     Edit
                   </DropdownMenuItem>
                   {category.isActive ? (
@@ -122,17 +121,18 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
                       variant="destructive"
                       onClick={() => setPendingRemove(category)}
                     >
-                      <Trash2 className="size-4" />
+                      <Trash2 />
                       Remove
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem onClick={() => unarchive(category)}>
-                      <ArchiveRestore className="size-4" />
+                      <ArchiveRestore />
                       Unarchive
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             </li>
           ))}
         </ul>
@@ -165,6 +165,6 @@ export function CategoryListSection({ type, title }: { type: CategoryType; title
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </section>
   );
 }

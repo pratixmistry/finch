@@ -209,7 +209,7 @@ export function InvestmentTxnDialog({
 
             <DialogFooter>
               <Button type="submit" disabled={logTxn.isPending}>
-                {logTxn.isPending && <Loader2 className="size-4 animate-spin" />}
+                {logTxn.isPending && <Loader2 className="animate-spin" />}
                 {type === "buy" ? "Log buy" : "Log sell"}
               </Button>
             </DialogFooter>

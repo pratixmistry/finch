@@ -40,7 +40,7 @@ export function CashFlowTable({
   );
 
   if (isLoading) {
-    return <Skeleton className="h-48 w-full rounded-xl" />;
+    return <Skeleton className="h-48 w-full rounded-2xl" />;
   }
 
   if (series.length === 0) {
@@ -48,13 +48,13 @@ export function CashFlowTable({
       <EmptyState
         icon={BarChart3}
         title="No transactions in this period"
-        className="rounded-xl border py-14"
+        className="surface"
       />
     );
   }
 
   return (
-    <div className="bg-card overflow-x-auto rounded-xl shadow-xs ring-1 ring-foreground/10">
+    <div className="surface overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>

@@ -4,6 +4,7 @@ import * as React from "react";
 import { startOfMonth } from "date-fns";
 import { Landmark, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
@@ -39,32 +40,26 @@ export default function AccountsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
-          <p className="text-muted-foreground text-sm">
-            Your cash, bank, card, wallet, and liability accounts.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-7">
+      <PageHeader title="Accounts" description="Your cash, bank, card, wallet, and liability accounts.">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <div className="flex items-center gap-2.5">
             <Switch id="show-archived" checked={showArchived} onCheckedChange={setShowArchived} />
             <Label htmlFor="show-archived" className="text-muted-foreground text-sm font-normal">
               Show archived
             </Label>
           </div>
           <Button onClick={() => setAddOpen(true)}>
-            <Plus className="size-4" />
+            <Plus />
             Add account
           </Button>
         </div>
-      </div>
+      </PageHeader>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-36 w-full rounded-xl" />
+            <Skeleton key={i} className="h-40 w-full rounded-2xl" />
           ))}
         </div>
       ) : !accounts || accounts.length === 0 ? (
@@ -72,10 +67,11 @@ export default function AccountsPage() {
           icon={Landmark}
           title="No accounts yet"
           description="Add your first bank, cash, or card account to start tracking balances."
+          className="surface"
           action={<Button onClick={() => setAddOpen(true)}>Add account</Button>}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {accounts.map((account) => {
             const allTxnsList = allTransactions ?? [];
             const balance = accountBalance(account, allTxnsList);

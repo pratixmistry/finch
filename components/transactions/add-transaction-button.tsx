@@ -8,7 +8,7 @@ export function AddTransactionButton() {
   const { openCreate } = useTransactionSheet();
   return (
     <Button onClick={() => openCreate()} className="w-fit shrink-0">
-      <Plus className="size-4" />
+      <Plus />
       Add transaction
     </Button>
   );

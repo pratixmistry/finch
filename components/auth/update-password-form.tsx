@@ -43,11 +43,11 @@ export function UpdatePasswordForm({ variant = "page" }: { variant?: "page" | "s
     <div className="flex flex-col gap-6">
       <div className="space-y-1.5">
         {variant === "page" ? (
-          <h2 className="text-2xl font-semibold tracking-tight">Set a new password</h2>
+          <h2 className="text-2xl font-bold">Set a new password</h2>
         ) : (
-          <h2 className="text-sm font-semibold">Password</h2>
+          <h2 className="text-lg font-semibold">Password</h2>
         )}
-        <p className={variant === "page" ? "text-muted-foreground text-sm" : "text-muted-foreground text-xs"}>
+        <p className={variant === "page" ? "text-muted-foreground text-base" : "text-muted-foreground text-sm"}>
           Choose a new password for your account.
         </p>
       </div>
@@ -84,7 +84,7 @@ export function UpdatePasswordForm({ variant = "page" }: { variant?: "page" | "s
           {formError && <p className="text-destructive text-sm">{formError}</p>}
 
           <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-            {isPending && <Loader2 className="size-4 animate-spin" />}
+            {isPending && <Loader2 className="animate-spin" />}
             Update password
           </Button>
         </form>

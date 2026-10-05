@@ -14,20 +14,15 @@ export function ChartCard({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "bg-card flex h-full flex-col rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5",
-        className
-      )}
-    >
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h3 className="text-sm font-semibold">{title}</h3>
-          {description && <p className="text-muted-foreground text-xs">{description}</p>}
+    <section className={cn("surface flex h-full flex-col p-5 sm:p-6", className)}>
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+        <div className="space-y-0.5">
+          <h3 className="text-lg font-semibold">{title}</h3>
+          {description && <p className="text-muted-foreground text-sm">{description}</p>}
         </div>
         {actions}
       </div>
       <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-    </div>
+    </section>
   );
 }

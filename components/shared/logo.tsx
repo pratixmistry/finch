@@ -4,12 +4,12 @@ export function LogoMark({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground",
+        "flex size-9 items-center justify-center rounded-[10px] bg-primary bg-linear-to-b from-white/20 to-transparent text-primary-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_1px_2px_rgb(0_0_0/0.15)]",
         className
       )}
     >
       <svg
-        className="size-4.5"
+        className="size-5"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -28,9 +28,9 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2.5", className)}>
       <LogoMark />
-      <span className="text-base font-semibold tracking-tight">Finch</span>
+      <span className="text-lg font-semibold">Finch</span>
     </div>
   );
 }

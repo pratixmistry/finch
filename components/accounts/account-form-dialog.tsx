@@ -180,7 +180,7 @@ export function AccountFormDialog({
 
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="size-4 animate-spin" />}
+                {isPending && <Loader2 className="animate-spin" />}
                 {isEdit ? "Save changes" : "Add account"}
               </Button>
             </DialogFooter>

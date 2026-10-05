@@ -120,7 +120,7 @@ export function CategoryFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Color</FormLabel>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2.5">
                     {CATEGORY_COLOR_SWATCHES.map((color) => (
                       <button
                         key={color}
@@ -128,7 +128,7 @@ export function CategoryFormDialog({
                         onClick={() => field.onChange(color)}
                         style={{ backgroundColor: color }}
                         className={cn(
-                          "size-7 rounded-full transition-transform",
+                          "focus-visible:ring-ring size-8 rounded-full transition-transform duration-150 ease-out outline-none focus-visible:ring-4",
                           field.value === color
                             ? "ring-foreground scale-110 ring-2 ring-offset-2 ring-offset-[var(--popover)]"
                             : "hover:scale-110"
@@ -148,20 +148,22 @@ export function CategoryFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Icon</FormLabel>
-                  <div className="grid grid-cols-8 gap-1.5">
+                  <div className="grid grid-cols-8 gap-1">
                     {ICON_PICKER_OPTIONS.map((icon) => (
                       <button
                         key={icon}
                         type="button"
                         onClick={() => field.onChange(icon)}
+                        aria-label={icon.replace(/-/g, " ")}
+                        aria-pressed={field.value === icon}
                         className={cn(
-                          "flex size-8 items-center justify-center rounded-lg border transition-colors",
+                          "focus-visible:ring-ring flex aspect-square w-full items-center justify-center rounded-[10px] border transition-colors duration-150 ease-out outline-none focus-visible:ring-4",
                           field.value === icon
                             ? "border-primary bg-primary/10 text-primary"
                             : "text-muted-foreground hover:bg-muted border-transparent"
                         )}
                       >
-                        <CategoryIcon name={icon} className="size-4" />
+                        <CategoryIcon name={icon} className="size-5" />
                       </button>
                     ))}
                   </div>
@@ -172,7 +174,7 @@ export function CategoryFormDialog({
 
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="size-4 animate-spin" />}
+                {isPending && <Loader2 className="animate-spin" />}
                 {isEdit ? "Save changes" : "Add category"}
               </Button>
             </DialogFooter>

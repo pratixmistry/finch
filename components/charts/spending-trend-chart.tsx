@@ -47,7 +47,7 @@ export function SpendingTrendChart() {
         <EmptyState
           icon={TrendingUp}
           title="No expenses in this period"
-          className="h-64 justify-center border-none py-0"
+          className="h-64 py-0"
         />
       ) : (
         <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">

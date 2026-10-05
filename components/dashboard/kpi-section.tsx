@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownCircle, ArrowUpCircle, Gem, Wallet2 } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Gem, Wallet } from "lucide-react";
 import { useAccounts } from "@/hooks/use-accounts";
 import { useTransactionsForRange } from "@/hooks/use-transactions";
 import { useDateRange } from "@/hooks/use-date-range";
@@ -70,12 +70,12 @@ export function KpiSection() {
   const comparisonLabel = COMPARISON_LABEL[preset];
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
         label="Total Balance"
         value={formatCurrency(currentBalance)}
-        icon={Wallet2}
-        iconClassName="bg-primary/10 text-primary"
+        icon={Wallet}
+        tone="primary"
         trend={percentChange(currentBalance, previousBalanceValue)}
         comparisonLabel={comparisonLabel}
         loading={loading}
@@ -83,8 +83,8 @@ export function KpiSection() {
       <KpiCard
         label="Income"
         value={formatCurrency(income)}
-        icon={ArrowUpCircle}
-        iconClassName="bg-income/10 text-income"
+        icon={ArrowDownLeft}
+        tone="income"
         trend={percentChange(income, previousIncome)}
         comparisonLabel={comparisonLabel}
         loading={loading}
@@ -92,8 +92,8 @@ export function KpiSection() {
       <KpiCard
         label="Expenses"
         value={formatCurrency(expenses)}
-        icon={ArrowDownCircle}
-        iconClassName="bg-expense/10 text-expense"
+        icon={ArrowUpRight}
+        tone="expense"
         trend={percentChange(expenses, previousExpenses)}
         isGoodWhenUp={false}
         comparisonLabel={comparisonLabel}
@@ -103,7 +103,7 @@ export function KpiSection() {
         label="Net Worth"
         value={formatCurrency(currentNetWorth)}
         icon={Gem}
-        iconClassName="bg-primary/10 text-primary"
+        tone="primary"
         trend={percentChange(currentNetWorth, previousNetWorth)}
         comparisonLabel={comparisonLabel}
         loading={loading}

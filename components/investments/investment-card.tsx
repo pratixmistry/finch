@@ -3,8 +3,10 @@
 import {
   ArchiveRestore,
   Archive as ArchiveIcon,
+  MinusCircle,
   MoreHorizontal,
   Pencil,
+  PlusCircle,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
@@ -17,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IconTile } from "@/components/shared/icon-tile";
 import { ASSET_TYPE_ICON, ASSET_TYPE_LABEL } from "./investment-asset-icon";
 import { investmentMetrics, rdProgress } from "@/lib/calculations";
 import { formatCurrency } from "@/lib/formatters/currency";
@@ -38,7 +41,6 @@ export function InvestmentCard({
   onLogSell: () => void;
   onToggleActive: () => void;
 }) {
-  const Icon = ASSET_TYPE_ICON[investment.assetType];
   const { marketValue, gainLoss, gainLossPercent } = investmentMetrics(investment);
   const isGain = gainLoss >= 0;
   const isRd = investment.assetType === "recurring_deposit";
@@ -53,22 +55,20 @@ export function InvestmentCard({
       : null;
 
   return (
-    <div className="bg-card rounded-xl p-4 shadow-xs ring-1 ring-foreground/10 sm:p-5">
-      <div className="flex items-start justify-between">
+    <div className="surface p-5">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="bg-investment/10 text-investment flex size-9 shrink-0 items-center justify-center rounded-lg">
-            <Icon className="size-4" strokeWidth={2} />
-          </div>
+          <IconTile icon={ASSET_TYPE_ICON[investment.assetType]} tone="investment" />
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className="truncate text-sm font-semibold">{investment.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="truncate text-base font-semibold">{investment.name}</p>
               {!investment.isActive && (
-                <Badge variant="secondary" className="h-4 shrink-0 px-1.5 text-[10px]">
+                <Badge variant="secondary" className="shrink-0">
                   Archived
                 </Badge>
               )}
             </div>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground truncate text-sm">
               {ASSET_TYPE_LABEL[investment.assetType]}
               {investment.symbol && ` · ${investment.symbol}`}
             </p>
@@ -77,33 +77,42 @@ export function InvestmentCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="shrink-0" aria-label="More options">
-              <MoreHorizontal className="size-4" />
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground -mt-1 -mr-2 shrink-0"
+              aria-label="More options"
+            >
+              <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {!isRd && (
               <>
-                <DropdownMenuItem onClick={onLogBuy}>Log buy</DropdownMenuItem>
+                <DropdownMenuItem onClick={onLogBuy}>
+                  <PlusCircle />
+                  Log buy
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={onLogSell} disabled={investment.quantity <= 0}>
+                  <MinusCircle />
                   Log sell
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             <DropdownMenuItem onClick={onEdit}>
-              <Pencil className="size-4" />
+              <Pencil />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onToggleActive}>
               {investment.isActive ? (
                 <>
-                  <ArchiveIcon className="size-4" />
+                  <ArchiveIcon />
                   Archive
                 </>
               ) : (
                 <>
-                  <ArchiveRestore className="size-4" />
+                  <ArchiveRestore />
                   Unarchive
                 </>
               )}
@@ -112,15 +121,20 @@ export function InvestmentCard({
         </DropdownMenu>
       </div>
 
-      <div className="mt-4">
-        <p className="text-2xl font-semibold tracking-tight tabular-nums">{formatCurrency(marketValue)}</p>
-        <div className="mt-2 flex items-center justify-between text-xs">
-          <span className={cn("flex items-center gap-1 font-medium", isGain ? "text-income" : "text-expense")}>
-            {isGain ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
+      <div className="mt-5">
+        <p className="truncate text-2xl font-semibold tabular-nums">{formatCurrency(marketValue)}</p>
+        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
+          <span
+            className={cn(
+              "flex items-center gap-1 font-medium tabular-nums",
+              isGain ? "text-income" : "text-expense"
+            )}
+          >
+            {isGain ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
             {formatCurrency(Math.abs(gainLoss))} ({Math.abs(gainLossPercent).toFixed(1)}%)
           </span>
           {!rd && (
-            <span className="text-muted-foreground">
+            <span className="text-muted-foreground tabular-nums">
               {investment.quantity} @ {formatCurrency(investment.currentPrice)}
             </span>
           )}
@@ -128,9 +142,9 @@ export function InvestmentCard({
       </div>
 
       {rd && (
-        <div className="mt-3 space-y-1.5">
-          <Progress value={(rd.elapsedMonths / (rd.elapsedMonths + rd.remainingMonths)) * 100} className="h-1.5" />
-          <div className="text-muted-foreground flex items-center justify-between text-[11px]">
+        <div className="mt-4 space-y-2">
+          <Progress value={(rd.elapsedMonths / (rd.elapsedMonths + rd.remainingMonths)) * 100} />
+          <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 text-xs tabular-nums">
             <span>
               {formatCurrency(investment.rdMonthlyAmount ?? 0)}/mo · {rd.elapsedMonths}/{rd.elapsedMonths + rd.remainingMonths} mo
             </span>

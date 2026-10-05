@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { PageHeader } from "@/components/shared/page-header";
 import { Calendar } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createCalendarDayButton } from "@/components/calendar/calendar-day-button";
@@ -35,27 +36,21 @@ export default function CalendarPage() {
   const monthExpenses = totalExpenses(transactions ?? []);
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Calendar</h1>
-          <p className="text-muted-foreground text-sm">
-            Your transactions for {formatMonthYear(month)}, day by day.
-          </p>
-        </div>
+    <div className="flex flex-col gap-7">
+      <PageHeader title="Calendar" description={<>Your transactions for {formatMonthYear(month)}, day by day.</>}>
         {!isLoading && (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-base tabular-nums">
             <span className="text-income font-medium">+{formatCurrency(monthIncome)}</span>
             {" · "}
             <span className="text-expense font-medium">-{formatCurrency(monthExpenses)}</span>
           </p>
         )}
-      </div>
+      </PageHeader>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[auto_1fr] lg:items-start">
-        <div className="bg-card w-fit rounded-xl p-2 shadow-xs ring-1 ring-foreground/10">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[auto_1fr] lg:items-start">
+        <div className="surface mx-auto w-fit p-1 sm:p-3 lg:mx-0">
           {isLoading ? (
-            <Skeleton className="h-80 w-80" />
+            <Skeleton className="m-3 h-80 w-72 sm:w-96" />
           ) : (
             <Calendar
               mode="single"
@@ -64,7 +59,7 @@ export default function CalendarPage() {
               onMonthChange={setMonth}
               selected={selected}
               onSelect={setSelected}
-              className="[--cell-size:--spacing(12)]"
+              className="[--cell-size:--spacing(10)] sm:[--cell-size:--spacing(13)]"
               components={{ DayButton }}
             />
           )}
