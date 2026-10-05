@@ -61,25 +61,27 @@ export function ExpenseDonutChart() {
   return (
     <ChartCard title="Expense Breakdown" description="By category, selected period">
       {isLoading ? (
-        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-80 w-full" />
       ) : breakdown.length === 0 ? (
         <EmptyState
           icon={PieChartIcon}
           title="No expenses in this period"
-          className="h-64 py-0"
+          className="h-80 py-0"
         />
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4">
-          <div className="relative h-52 w-52 shrink-0">
+        <div className="flex flex-1 flex-col items-center justify-center gap-5">
+          <div className="relative size-52 shrink-0">
             <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
               <PieChart>
                 <Pie
                   data={breakdown}
                   dataKey="total"
                   nameKey="name"
-                  innerRadius={62}
-                  outerRadius={92}
+                  innerRadius={70}
+                  outerRadius={94}
                   paddingAngle={2}
+                  cornerRadius={4}
+                  animationDuration={500}
                   strokeWidth={2}
                   stroke="var(--card)"
                   onClick={(entry) => {
@@ -101,12 +103,12 @@ export function ExpenseDonutChart() {
                       formatter={(_value, _name, item) => {
                         const entry = item.payload as (typeof breakdown)[number];
                         return (
-                          <div className="flex w-full items-center gap-2">
+                          <div className="flex w-full items-center gap-2 leading-none">
                             <span
-                              className="size-2.5 shrink-0 rounded-full"
+                              className="size-2 shrink-0 rounded-full"
                               style={{ backgroundColor: entry.color }}
                             />
-                            <span className="text-muted-foreground flex-1">{entry.name}</span>
+                            <span className="text-muted-foreground flex-1 pr-2">{entry.name}</span>
                             <span className="font-medium tabular-nums">
                               {formatCurrency(entry.total)} · {entry.percentage.toFixed(1)}%
                             </span>
@@ -119,8 +121,8 @@ export function ExpenseDonutChart() {
               </PieChart>
             </ChartContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-muted-foreground text-xs">Total</p>
-              <p className="text-base font-semibold tabular-nums">{formatCurrency(total)}</p>
+              <p className="text-muted-foreground text-xs">Total spent</p>
+              <p className="max-w-32 truncate text-lg font-semibold">{formatCurrency(total)}</p>
             </div>
           </div>
 
@@ -134,7 +136,7 @@ export function ExpenseDonutChart() {
                   className="hover:bg-muted focus-visible:ring-ring -mx-2 flex w-[calc(100%+1rem)] items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm transition-colors duration-150 outline-none focus-visible:ring-4 disabled:cursor-default disabled:hover:bg-transparent"
                 >
                   <span
-                    className="size-2.5 shrink-0 rounded-full"
+                    className="size-2 shrink-0 rounded-full"
                     style={{ backgroundColor: entry.color }}
                   />
                   <span className="min-w-0 flex-1 truncate">{entry.name}</span>

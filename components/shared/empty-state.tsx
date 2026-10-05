@@ -4,12 +4,15 @@ import { cn } from "@/lib/utils";
 
 export function EmptyState({
   icon,
+  illustration,
   title,
   description,
   action,
   className,
 }: {
   icon: LucideIcon;
+  // Artwork shown instead of the icon tile, for first-run screens.
+  illustration?: React.ReactNode;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -22,7 +25,7 @@ export function EmptyState({
         className
       )}
     >
-      <IconTile icon={icon} size="xl" />
+      {illustration ?? <IconTile icon={icon} size="xl" />}
       <div className="space-y-1">
         <p className="text-lg font-semibold">{title}</p>
         {description && (

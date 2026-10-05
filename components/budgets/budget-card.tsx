@@ -77,7 +77,7 @@ export function BudgetCard({
       <div className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">
           <span
-            className={cn("text-2xl font-semibold tabular-nums", isOverBudget && "text-expense")}
+            className={cn("text-2xl font-semibold", isOverBudget && "text-expense")}
           >
             {formatCurrency(spent)}
           </span>

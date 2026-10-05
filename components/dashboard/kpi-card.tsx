@@ -39,7 +39,7 @@ export function KpiCard({
       ) : (
         <p
           title={value}
-          className="mt-4 truncate text-2xl font-semibold tabular-nums @max-[12.5rem]:text-xl @max-[12.5rem]:leading-[2.125rem]"
+          className="mt-4 truncate text-2xl font-semibold @max-[12.5rem]:text-xl @max-[12.5rem]:leading-[2.125rem]"
         >
           {value}
         </p>

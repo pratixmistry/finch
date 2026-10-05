@@ -122,7 +122,7 @@ export function InvestmentCard({
       </div>
 
       <div className="mt-5">
-        <p className="truncate text-2xl font-semibold tabular-nums">{formatCurrency(marketValue)}</p>
+        <p className="truncate text-2xl font-semibold">{formatCurrency(marketValue)}</p>
         <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
           <span
             className={cn(

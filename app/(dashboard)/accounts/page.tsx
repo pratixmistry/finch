@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { startOfMonth } from "date-fns";
 import { Landmark, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -65,6 +66,16 @@ export default function AccountsPage() {
       ) : !accounts || accounts.length === 0 ? (
         <EmptyState
           icon={Landmark}
+          illustration={
+            <Image
+              src="/illustrations/glowing-card.webp"
+              alt=""
+              width={1024}
+              height={578}
+              unoptimized
+              className="aspect-video w-full max-w-xs rounded-2xl object-cover shadow-raised"
+            />
+          }
           title="No accounts yet"
           description="Add your first bank, cash, or card account to start tracking balances."
           className="surface"
