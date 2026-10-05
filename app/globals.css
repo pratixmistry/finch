@@ -274,3 +274,46 @@
     --muted-foreground: #d4d4d8;
   }
 }
+
+/* Auth backdrop: a layered aurora gradient — base ramp, blurred colour
+   fields, a top glow, a vignette and film grain. Always dark, since the
+   sign-in card is glass on top of it. */
+.auth-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: none;
+  background: linear-gradient(165deg, #060714 0%, #0c0d2a 38%, #171349 72%, #2a1c6c 100%);
+}
+.auth-backdrop > * {
+  position: absolute;
+  inset: 0;
+}
+.auth-backdrop-fields {
+  inset: -12%;
+  background:
+    radial-gradient(ellipse 46% 42% at 18% 88%, rgb(79 57 246 / 0.75), transparent 70%),
+    radial-gradient(ellipse 42% 40% at 84% 78%, rgb(168 85 247 / 0.55), transparent 70%),
+    radial-gradient(ellipse 38% 30% at 56% 108%, rgb(251 113 93 / 0.5), transparent 70%),
+    radial-gradient(ellipse 34% 30% at 88% 10%, rgb(56 189 248 / 0.2), transparent 70%);
+  filter: blur(56px);
+  animation: auth-backdrop-drift 28s ease-in-out infinite alternate;
+}
+.auth-backdrop-glow {
+  background: radial-gradient(ellipse 60% 38% at 50% 0%, rgb(255 255 255 / 0.1), transparent 70%);
+}
+.auth-backdrop-vignette {
+  background: radial-gradient(circle at center, transparent 35%, rgb(0 0 0 / 0.2) 70%, rgb(0 0 0 / 0.5) 100%);
+}
+.auth-backdrop-grain {
+  mix-blend-mode: soft-light;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+@keyframes auth-backdrop-drift {
+  to {
+    transform: translate3d(3%, -4%, 0) scale(1.08);
+  }
+}
