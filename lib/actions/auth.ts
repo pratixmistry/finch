@@ -33,7 +33,7 @@ export async function login(values: LoginFormValues): Promise<ActionResult> {
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) return { error: error.message };
 
-  redirect("/overview");
+  redirect("/");
 }
 
 export async function signup(values: SignupFormValues): Promise<ActionResult> {
@@ -47,7 +47,7 @@ export async function signup(values: SignupFormValues): Promise<ActionResult> {
     password: parsed.data.password,
     options: {
       data: { full_name: parsed.data.fullName },
-      emailRedirectTo: `${siteUrl}/auth/confirm?next=/overview`,
+      emailRedirectTo: `${siteUrl}/auth/confirm?next=/`,
     },
   });
   if (error) return { error: error.message };
@@ -87,5 +87,5 @@ export async function updatePassword(
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { error: error.message };
 
-  redirect("/overview");
+  redirect("/");
 }

@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const AUTH_ROUTES = ["/login", "/signup", "/reset-password", "/update-password"];
-const DEFAULT_AUTHENTICATED_ROUTE = "/overview";
+const DEFAULT_AUTHENTICATED_ROUTE = "/";
 const DEFAULT_UNAUTHENTICATED_ROUTE = "/login";
 
 // Refreshes the Supabase auth session on every request and enforces route
@@ -36,7 +36,9 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
-  const isPublicRoute = pathname === "/" || isAuthRoute || pathname.startsWith("/auth/");
+  // API routes authenticate themselves and answer with JSON, not a redirect.
+  const isPublicRoute =
+    isAuthRoute || pathname.startsWith("/auth/") || pathname.startsWith("/api/");
 
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();

@@ -8,6 +8,35 @@ Phase 1 (accounts, transactions, categories, dashboard) and Phase 2 (calendar,
 budgets, investments, reports/CSV export, settings) are both built. See
 [Scope & limitations](#scope--limitations) for what's covered and what's still open.
 
+## Generative UI experiment (this branch)
+
+On this branch the dashboard is replaced by a single agent surface built with
+[OpenUI](https://openui.com/docs). You ask about your money and the agent
+composes the answer as UI. Sections below that describe dashboard pages, the
+sidebar and charts refer to `main`.
+
+| Path | Role |
+| --- | --- |
+| `lib/openui/library.tsx` | The component library: OpenUI's built-in chat library plus Finch components. Also the entry point for the spec generator. |
+| `lib/openui/components/` | Finch components the agent can render (`TransactionDraft`, `BudgetMeter`, `CategoryBreakdown`, `ManageAction`). |
+| `lib/openui/prompt-options.ts` | Preamble, rules and examples added to the generated system prompt. |
+| `lib/openui/generated/spec.json` | Generated from the library by `npm run generate` (runs before `dev` and `build`). |
+| `lib/openui/tools.ts` | Read-only tools the model can call, run with the signed-in user's Supabase session. |
+| `app/api/chat/route.ts` | Vercel AI SDK `streamText` loop: system prompt + tools, streamed to the browser. |
+| `components/agent/finch-agent.tsx` | `<AgentInterface>` shell: threads, composer, starters, settings route. |
+
+Set `THESYS_API_KEY` (OpenUI Gateway, recommended) or `OPENAI_API_KEY` in
+`.env.local`; see `.env.example`.
+
+**Add a component:** define it with `defineComponent` in
+`lib/openui/components/`, add it to `finchBlocks` in `library.tsx`, add a line to
+the group notes (and ideally an example in `prompt-options.ts`), then run
+`npm run generate`.
+
+**Add a tool:** add a `tool()` to `createFinchTools` in `lib/openui/tools.ts`.
+Keep tools read-only; anything that writes should be a component the user
+confirms, like `TransactionDraft`.
+
 ## Tech stack
 
 - **Frontend**: Next.js 16 (App Router, Turbopack), TypeScript, React 19, Tailwind CSS v4, shadcn/ui, lucide-react
